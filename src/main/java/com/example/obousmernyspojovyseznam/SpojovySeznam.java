@@ -1,6 +1,11 @@
 package com.example.obousmernyspojovyseznam;
 
-public class SpojovySeznam<E> {
+import java.util.Iterator;
+
+public class SpojovySeznam<E> implements Iterable<E> {
+    //TODO první při zpět odkazuje na poslední a poslední další ukazuje na předchozí
+    //TODO odkazování sám na sebe v případě jednoho prvku
+    //TODO odstranic Prvek<E> posledni; - pred prvnim = posledni
     private Prvek<E> prvni;
     private Prvek<E> aktualni;
     private Prvek<E> posledni;
@@ -252,6 +257,10 @@ public class SpojovySeznam<E> {
             return aktualni.predchozi.prvek;
         }
         return null; //asi přidat throw chybu sem
+    }
+    @Override
+    public Iterator<E> iterator() {
+        return null;
     }
 
 }
