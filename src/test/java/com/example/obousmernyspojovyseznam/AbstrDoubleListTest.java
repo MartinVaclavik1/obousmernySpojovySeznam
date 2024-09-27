@@ -2,6 +2,8 @@ package com.example.obousmernyspojovyseznam;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AbstrDoubleListTest {
@@ -67,7 +69,7 @@ class AbstrDoubleListTest {
     }
 
     @Test
-    public void testVlozDalsi01(){
+    public void testVlozNaslednika01(){
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPrvni(T1);
         seznam.zpristupniPrvni();
@@ -78,7 +80,7 @@ class AbstrDoubleListTest {
     }
 
     @Test
-    public void testVlozDalsi02(){
+    public void testVlozNaslednika02(){
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPrvni(T1);
         seznam.vlozPrvni(T3);
@@ -107,6 +109,106 @@ class AbstrDoubleListTest {
         seznam.vlozPosledni(T2);
         TestClass[] expected = new TestClass[]{T1, T2};
         TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), seznam.zpristupniPosledni()};
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testOdeberAktualni01(){
+        IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
+        seznam.vlozPosledni(T1);
+        seznam.vlozPosledni(T2);
+        seznam.vlozPosledni(T3);
+        seznam.zpristupniPrvni();
+        seznam.zpristupniNaslednika();
+        seznam.odeberAktualni();
+        TestClass[] expected = new TestClass[]{T1, T3};
+        TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), seznam.zpristupniPosledni()};
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testOdeberAktualni02(){
+        IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
+        seznam.vlozPosledni(T1);
+        seznam.vlozPosledni(T2);
+        seznam.vlozPosledni(T3);
+        seznam.zpristupniPrvni();
+        seznam.zpristupniNaslednika();
+
+        TestClass expected = T2;
+        TestClass result = seznam.odeberAktualni();;
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testOdeberAktualni03(){
+        IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
+        seznam.vlozPosledni(T1);
+        seznam.vlozPosledni(T2);
+        seznam.vlozPosledni(T3);
+        seznam.zpristupniPrvni();
+        seznam.odeberAktualni();
+        TestClass[] expected = new TestClass[]{T2, T3};
+        TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), seznam.zpristupniPosledni()};
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testOdeberAktualni04(){
+        IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
+        seznam.vlozPosledni(T1);
+        seznam.vlozPosledni(T2);
+        seznam.vlozPosledni(T3);
+        seznam.zpristupniPosledni();
+        seznam.odeberAktualni();
+        TestClass[] expected = new TestClass[]{T1, T2};
+        TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), seznam.zpristupniPosledni()};
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testIteratorNext01(){
+        IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
+        seznam.vlozPosledni(T1);
+        seznam.vlozPosledni(T2);
+        seznam.vlozPosledni(T3);
+        Iterator<TestClass> iterator = seznam.iterator();
+        TestClass[] expected = new TestClass[]{T1, T2, T3};
+        TestClass[] result = new TestClass[]{iterator.next(), iterator.next(), iterator.next()};
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testIteratorNext02(){
+        IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
+        seznam.vlozPosledni(T1);
+        seznam.vlozPosledni(T2);
+        seznam.vlozPosledni(T3);
+        seznam.vlozPosledni(T4);
+        seznam.vlozPosledni(T5);
+        seznam.vlozPosledni(T6);
+        seznam.vlozPosledni(T7);
+        seznam.vlozPosledni(T8);
+        seznam.vlozPosledni(T9);
+        Iterator<TestClass> iterator = seznam.iterator();
+        TestClass[] expected = new TestClass[]{T1, T2, T3, T4, T5, T6, T7, T8, T9};
+        TestClass[] result = new TestClass[]{iterator.next(), iterator.next(), iterator.next(),
+                iterator.next(), iterator.next(), iterator.next(),
+                iterator.next(), iterator.next(), iterator.next()};
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testIteratorNext03(){
+        IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
+        seznam.vlozPosledni(T1);
+        seznam.vlozPosledni(T2);
+        seznam.vlozPosledni(T3);
+        seznam.vlozPosledni(T4);
+        Iterator<TestClass> iterator = seznam.iterator();
+        TestClass[] expected = new TestClass[]{T1, T2, T3, T4, null};
+        TestClass[] result = new TestClass[]{iterator.next(), iterator.next(),
+                iterator.next(), iterator.next(), iterator.next()};
         assertArrayEquals(expected, result);
     }
 }

@@ -2,7 +2,7 @@ package com.example.obousmernyspojovyseznam;
 
 import java.util.Iterator;
 
-public class SpojovySeznam<E> implements Iterable<E> {
+public class SpojovySeznam_smazat<E> implements Iterable<E> {
     //TODO první při zpět odkazuje na poslední a poslední další ukazuje na předchozí
     //TODO odkazování sám na sebe v případě jednoho prvku
     //TODO odstranic Prvek<E> posledni; - pred prvnim = posledni
