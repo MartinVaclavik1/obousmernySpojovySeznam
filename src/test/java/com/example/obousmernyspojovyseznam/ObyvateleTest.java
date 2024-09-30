@@ -2,14 +2,31 @@ package com.example.obousmernyspojovyseznam;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class ObyvateleTest {
 
+    private final String cestaKCSVSouboru = "C:\\Users\\admin\\OneDrive - Univerzita Pardubice\\Plocha\\Škola\\2\\Datové Struktury\\Sem.A\\kraje.csv";
+
     @Test
-    public void testImportData(){
+    public void testImportData01(){
         Obyvatele obyvatele = new Obyvatele();
-        //TODO potom přesunout někam do projektu
-        obyvatele.importData("C:\\Users\\admin\\OneDrive - Univerzita Pardubice\\Plocha\\Škola\\2\\Datové Struktury\\Sem.A\\kraje.csv");
+        obyvatele.importData(cestaKCSVSouboru);
     }
+
+    @Test
+    public void testZjistiPrumer01(){
+        Obyvatele obyvatele = new Obyvatele();
+        obyvatele.importData(cestaKCSVSouboru);
+        float prumer = obyvatele.zjistiPrumer(enumKraj.NULA);
+        System.out.println(prumer);
+    }
+
+    @Test
+    public void testZjistiPrumer02(){
+        Obyvatele obyvatele = new Obyvatele();
+        obyvatele.importData(cestaKCSVSouboru);
+        float prumer = obyvatele.zjistiPrumer(enumKraj.HLAVNYMESTOPRAHA);
+        System.out.println(prumer);
+    }
+
 }
