@@ -1,4 +1,8 @@
-package com.example.obousmernyspojovyseznam;
+package com.example.obousmernyspojovyseznam.Obyvatele;
+
+import com.example.obousmernyspojovyseznam.ENUMS.enumKraj;
+import com.example.obousmernyspojovyseznam.ENUMS.enumPozice;
+import com.example.obousmernyspojovyseznam.Obec;
 
 public interface IObyvatele {
     int importData(String soubor); // – provede import dat z datového souboru

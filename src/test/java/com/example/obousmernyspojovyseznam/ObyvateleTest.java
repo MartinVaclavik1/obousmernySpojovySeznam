@@ -1,5 +1,7 @@
 package com.example.obousmernyspojovyseznam;
 
+import com.example.obousmernyspojovyseznam.ENUMS.enumKraj;
+import com.example.obousmernyspojovyseznam.Obyvatele.Obyvatele;
 import org.junit.jupiter.api.Test;
 
 

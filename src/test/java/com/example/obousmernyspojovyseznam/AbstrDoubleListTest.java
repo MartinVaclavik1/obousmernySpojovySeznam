@@ -1,5 +1,7 @@
 package com.example.obousmernyspojovyseznam;
 
+import com.example.obousmernyspojovyseznam.AbstrDoubleList.AbstrDoubleList;
+import com.example.obousmernyspojovyseznam.AbstrDoubleList.IAbstrDoubleList;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;

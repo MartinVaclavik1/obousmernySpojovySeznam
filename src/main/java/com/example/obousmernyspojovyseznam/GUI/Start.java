@@ -1,4 +1,4 @@
-package com.example.obousmernyspojovyseznam;
+package com.example.obousmernyspojovyseznam.GUI;
 
 import javax.swing.*;
 

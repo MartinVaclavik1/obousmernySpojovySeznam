@@ -1,4 +1,10 @@
-package com.example.obousmernyspojovyseznam;
+package com.example.obousmernyspojovyseznam.Obyvatele;
+
+import com.example.obousmernyspojovyseznam.AbstrDoubleList.AbstrDoubleList;
+import com.example.obousmernyspojovyseznam.AbstrDoubleList.IAbstrDoubleList;
+import com.example.obousmernyspojovyseznam.ENUMS.enumKraj;
+import com.example.obousmernyspojovyseznam.ENUMS.enumPozice;
+import com.example.obousmernyspojovyseznam.Obec;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

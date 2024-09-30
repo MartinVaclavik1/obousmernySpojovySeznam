@@ -1,4 +1,4 @@
-package com.example.obousmernyspojovyseznam;
+package com.example.obousmernyspojovyseznam.AbstrDoubleList;
 
 import java.util.Iterator;
 
