@@ -1,7 +1,5 @@
 package com.example.obousmernyspojovyseznam.AbstrDoubleList;
 
-import com.example.obousmernyspojovyseznam.AbstrDoubleList.AbstrDoubleList;
-import com.example.obousmernyspojovyseznam.AbstrDoubleList.IAbstrDoubleList;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
@@ -138,7 +136,7 @@ class AbstrDoubleListTest {
         seznam.zpristupniNaslednika();
 
         TestClass expected = T2;
-        TestClass result = seznam.odeberAktualni();;
+        TestClass result = seznam.odeberAktualni();
         assertEquals(expected, result);
     }
 
