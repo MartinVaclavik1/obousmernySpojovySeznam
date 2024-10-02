@@ -12,7 +12,7 @@ import java.util.Iterator;
 
 public class Obyvatele implements IObyvatele {
     //TODO zeptat se, jestli pole má mít fixní velikost (14), nebo zvětšovat při vkládání
-    private IAbstrDoubleList<Obec>[] pole;
+    private IAbstrDoubleList<Obec>[] pole = new AbstrDoubleList[14];
 
     @Override
     public int importData(String soubor) {
@@ -29,18 +29,10 @@ public class Obyvatele implements IObyvatele {
                 int pocetMuzu = Integer.parseInt(rozdelenyRadek[4]);
                 int pocetZen = Integer.parseInt(rozdelenyRadek[5]);
 
-
-                //TODO smazat, jestli má být fixní velikost
-                if (pole == null) {
-                    pole = new AbstrDoubleList[idKraje];
-                } else if (pole.length < idKraje) {
-                    zmenVelikostPole(idKraje);
+                if (pole[idKraje - 1] == null) {
+                    pole[idKraje - 1] = new AbstrDoubleList<>();
                 }
-
-                if(pole[idKraje-1] == null){
-                    pole[idKraje -1] = new AbstrDoubleList<>();
-                }
-                pole[idKraje - 1].vlozPosledni(new Obec(psc,nazevObce,pocetMuzu,pocetZen));
+                pole[idKraje - 1].vlozPosledni(new Obec(psc, nazevObce, pocetMuzu, pocetZen));
                 korektneNactene++;
 
                 //System.out.println(radek);
@@ -56,71 +48,91 @@ public class Obyvatele implements IObyvatele {
 
     @Override
     public void vlozObec(Obec obec, enumPozice pozice, enumKraj kraj) {
-        //TODO získat z kraje idKraje - v pole[idKraje - 1], nebo jak udělat
+
+        //TODO provizorni
         try {
-            pole[kraj.getIdKraje() - 1].jePrazdny();
-        }catch (IndexOutOfBoundsException | NullPointerException x){
-            zmenVelikostPole(kraj.getIdKraje());
+            switch (pozice) {
+                case PRVNI -> pole[kraj.getIdKraje() - 1].vlozPrvni(obec);
+                case POSLEDNI -> pole[kraj.getIdKraje() - 1].vlozPosledni(obec);
+                case PREDCHUDCE -> pole[kraj.getIdKraje() - 1].vlozPredchudce(obec);
+                case NASLEDNIK -> pole[kraj.getIdKraje() - 1].vlozNaslednika(obec);
+                case AKTUALNI -> //TODO vyhazovat chybu?
+                        System.out.println("Nelze vložit, jako aktuální");
+            }
+
+        } catch (Exception x) {
+            System.err.println("ss");
         }
-        switch (pozice){
-            case PRVNI -> pole[kraj.getIdKraje() - 1].vlozPrvni(obec);
-            case POSLEDNI -> pole[kraj.getIdKraje() - 1].vlozPosledni(obec);
-            case PREDCHUDCE -> pole[kraj.getIdKraje() - 1].vlozPredchudce(obec);
-            case NASLEDNIK -> pole[kraj.getIdKraje() - 1].vlozNaslednika(obec);
-            case AKTUALNI -> //TODO vyhazovat chybu?
-                    System.out.println("Nelze vložit, jako aktuální");
-        }
+
     }
 
     @Override
     public Obec zpristupniObec(enumPozice pozice, enumKraj kraj) {
         //TODO chytat, když bude pozice null?
-        switch (pozice){
-            case PRVNI -> {
-                return pole[kraj.getIdKraje() - 1].zpristupniPrvni();
-            }
-            case POSLEDNI -> {
-                return pole[kraj.getIdKraje() - 1].zpristupniPosledni();
-            }
-            case PREDCHUDCE -> {
-                return pole[kraj.getIdKraje() - 1].zpristupniPredchudce();
-            }
-            case NASLEDNIK -> {
-                return pole[kraj.getIdKraje() - 1].zpristupniNaslednika();
-            }
-            case AKTUALNI ->{
-                return pole[kraj.getIdKraje() - 1].zpristupniAktualni();
-            }
-            default -> {
-                return null;
-            }
-
+        if (pole[kraj.getIdKraje() - 1] == null) {
+            System.err.println("Kraj je prázdný");
+            return null;
         }
+
+        //TODO provizorni
+        try {
+            switch (pozice) {
+                case PRVNI -> {
+                    return pole[kraj.getIdKraje() - 1].zpristupniPrvni();
+                }
+                case POSLEDNI -> {
+                    return pole[kraj.getIdKraje() - 1].zpristupniPosledni();
+                }
+                case PREDCHUDCE -> {
+                    return pole[kraj.getIdKraje() - 1].zpristupniPredchudce();
+                }
+                case NASLEDNIK -> {
+                    return pole[kraj.getIdKraje() - 1].zpristupniNaslednika();
+                }
+                case AKTUALNI -> {
+                    return pole[kraj.getIdKraje() - 1].zpristupniAktualni();
+                }
+                default -> {
+                    return null;
+                }
+
+            }
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
+        return null;
     }
 
     @Override
     public Obec odeberObec(enumPozice pozice, enumKraj kraj) {
         //TODO stejný jak u zpřístupnění?
-        switch (pozice) {
-            case PRVNI -> {
-                return pole[kraj.getIdKraje() - 1].odeberPrvni();
+
+        try {
+            switch (pozice) {
+                case PRVNI -> {
+                    return pole[kraj.getIdKraje() - 1].odeberPrvni();
+                }
+                case POSLEDNI -> {
+                    return pole[kraj.getIdKraje() - 1].odeberPosledni();
+                }
+                case PREDCHUDCE -> {
+                    return pole[kraj.getIdKraje() - 1].odeberPredchudce();
+                }
+                case NASLEDNIK -> {
+                    return pole[kraj.getIdKraje() - 1].odeberNaslednika();
+                }
+                case AKTUALNI -> {
+                    return pole[kraj.getIdKraje() - 1].odeberAktualni();
+                }
+                default -> {
+                    return null;
+                }
             }
-            case POSLEDNI -> {
-                return pole[kraj.getIdKraje() - 1].odeberPosledni();
-            }
-            case PREDCHUDCE -> {
-                return pole[kraj.getIdKraje() - 1].odeberPredchudce();
-            }
-            case NASLEDNIK -> {
-                return pole[kraj.getIdKraje() - 1].odeberNaslednika();
-            }
-            case AKTUALNI -> {
-                return pole[kraj.getIdKraje() - 1].odeberAktualni();
-            }
-            default -> {
-                return null;
-            }
+        } catch (Exception x) {
+            System.err.println("ss");
         }
+
+        return null;
     }
 
     @Override
@@ -129,35 +141,35 @@ public class Obyvatele implements IObyvatele {
         float prumer = 0;
         int pocet = 0;
         //TODO zeptat se, jestli hodnota rovna nule je myšlen průměr, nebo nula jako kraj
-        if(kraj == enumKraj.NULA){
+        if (kraj == enumKraj.NULA) {
             for (IAbstrDoubleList<Obec> obec : pole) {
                 Iterator<Obec> iterator = obec.iterator();
 
-                while (iterator.hasNext()){
+                while (iterator.hasNext()) {
                     prumer += iterator.next().getCelkem();
                     pocet++;
                 }
 
             }
-        }else {
+        } else {
             Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 prumer += iterator.next().getCelkem();
                 pocet++;
             }
         }
 
-        return prumer/pocet;
+        return prumer / pocet;
     }
 
     @Override
     public void zobrazObce(enumKraj kraj) {
         //výpis v případě, že je kraj nula
         //TODO zeptat se, jestli to je myšlený jako prázdný kraj, nebo nula jako nula
-        if(kraj == enumKraj.NULA){
-            for (IAbstrDoubleList<Obec> list: pole){
+        if (kraj == enumKraj.NULA) {
+            for (IAbstrDoubleList<Obec> list : pole) {
                 Iterator<Obec> iterator = list.iterator();
-                while (iterator.hasNext()){
+                while (iterator.hasNext()) {
                     System.out.println(iterator.next().toString());
                 }
             }
@@ -165,7 +177,7 @@ public class Obyvatele implements IObyvatele {
         }
 
         Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             System.out.println(iterator.next().toString());
         }
     }
@@ -174,12 +186,12 @@ public class Obyvatele implements IObyvatele {
     public void zobrazObceNadPrumer(enumKraj kraj) {
         float prumer = zjistiPrumer(kraj);
         //TODO zeptat se co znamená nula
-        if(kraj == enumKraj.NULA){
-            for (IAbstrDoubleList<Obec> list: pole){
+        if (kraj == enumKraj.NULA) {
+            for (IAbstrDoubleList<Obec> list : pole) {
                 Iterator<Obec> iterator = list.iterator();
-                while (iterator.hasNext()){
+                while (iterator.hasNext()) {
                     Obec dalsi = iterator.next();
-                    if(dalsi.getCelkem() > prumer){
+                    if (dalsi.getCelkem() > prumer) {
                         System.out.println(dalsi);
                     }
                 }
@@ -188,10 +200,10 @@ public class Obyvatele implements IObyvatele {
         }
 
         Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
 
             Obec dalsi = iterator.next();
-            if(dalsi.getCelkem() > prumer){
+            if (dalsi.getCelkem() > prumer) {
                 System.out.println(dalsi);
             }
         }
@@ -200,18 +212,13 @@ public class Obyvatele implements IObyvatele {
     @Override
     public void zrus(enumKraj kraj) {
         //TODO nula
-        if(kraj == enumKraj.NULA){
-            for (IAbstrDoubleList<Obec> obec : pole){
+        if (kraj == enumKraj.NULA) {
+            for (IAbstrDoubleList<Obec> obec : pole) {
                 obec.zrus();
             }
             return;
         }
-        pole[kraj.getIdKraje()-1].zrus();
+        pole[kraj.getIdKraje() - 1].zrus();
     }
 
-    private void zmenVelikostPole(int idKraje) {
-        IAbstrDoubleList<Obec>[] pomocna = pole;
-        pole = new AbstrDoubleList[idKraje];
-        System.arraycopy(pomocna, 0, pole, 0, pomocna.length);
-    }
 }

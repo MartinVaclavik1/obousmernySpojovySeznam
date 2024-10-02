@@ -1,7 +1,6 @@
 package com.example.obousmernyspojovyseznam.ENUMS;
 
 public enum enumPozice {
-    //TODO prvni, posledni, predchuudce, naslednik, aktualni
     PRVNI("první"),
     POSLEDNI("poslední"),
     PREDCHUDCE("předchůdce"),

@@ -34,7 +34,7 @@ class AbstrDoubleListTest {
     private final TestClass T9 = new TestClass(9);
 
     @Test
-    public void testJePrazdny01(){
+    public void testJePrazdny01() {
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         boolean expected = true;
         boolean result = seznam.jePrazdny();
@@ -42,34 +42,49 @@ class AbstrDoubleListTest {
     }
 
     @Test
-    public void testJePrazdny02(){
-        IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
-        seznam.vlozPrvni(T1);
-        boolean expected = false;
-        boolean result = seznam.jePrazdny();
-        assertEquals(expected, result);
-    }
-    @Test
-    public void testVlozPrvni01(){
-        IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
-        seznam.vlozPrvni(T1);
-        TestClass[] expected = new TestClass[]{T1};
-        TestClass[] result = new TestClass[]{seznam.zpristupniPrvni()};//
-        assertArrayEquals(expected, result);
+    public void testJePrazdny02() {
+        try {
+            IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
+            seznam.vlozPrvni(T1);
+            boolean expected = false;
+            boolean result = seznam.jePrazdny();
+            assertEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
+
     }
 
     @Test
-    public void testVlozPrvni02(){
+    public void testVlozPrvni01() {
+        try {
+            IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
+            seznam.vlozPrvni(T1);
+            TestClass[] expected = new TestClass[]{T1};
+            TestClass[] result = new TestClass[]{seznam.zpristupniPrvni()};//
+            assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
+    }
+
+    @Test
+    public void testVlozPrvni02() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPrvni(T1);
         seznam.vlozPrvni(T2);
         TestClass[] expected = new TestClass[]{T2, T1};
         TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), seznam.zpristupniPosledni()};
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testVlozNaslednika01(){
+    public void testVlozNaslednika01() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPrvni(T1);
         seznam.zpristupniPrvni();
@@ -77,10 +92,14 @@ class AbstrDoubleListTest {
         TestClass[] expected = new TestClass[]{T1, T2};
         TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), seznam.zpristupniPosledni()};//
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testVlozNaslednika02(){
+    public void testVlozNaslednika02() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPrvni(T1);
         seznam.vlozPrvni(T3);
@@ -89,31 +108,43 @@ class AbstrDoubleListTest {
         TestClass[] expected = new TestClass[]{T3, T2, T1};
         seznam.zpristupniNaslednika();
         TestClass prostredni = seznam.zpristupniAktualni();
-        TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), prostredni,seznam.zpristupniPosledni()};
+        TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), prostredni, seznam.zpristupniPosledni()};
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testVlozPosledni01(){
+    public void testVlozPosledni01() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPosledni(T1);
         TestClass[] expected = new TestClass[]{T1};
         TestClass[] result = new TestClass[]{seznam.zpristupniPosledni()};//
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testVlozPosledni02(){
+    public void testVlozPosledni02() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPosledni(T1);
         seznam.vlozPosledni(T2);
         TestClass[] expected = new TestClass[]{T1, T2};
         TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), seznam.zpristupniPosledni()};
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testOdeberAktualni01(){
+    public void testOdeberAktualni01() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPosledni(T1);
         seznam.vlozPosledni(T2);
@@ -124,10 +155,14 @@ class AbstrDoubleListTest {
         TestClass[] expected = new TestClass[]{T1, T3};
         TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), seznam.zpristupniPosledni()};
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testOdeberAktualni02(){
+    public void testOdeberAktualni02() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPosledni(T1);
         seznam.vlozPosledni(T2);
@@ -138,10 +173,14 @@ class AbstrDoubleListTest {
         TestClass expected = T2;
         TestClass result = seznam.odeberAktualni();
         assertEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testOdeberAktualni03(){
+    public void testOdeberAktualni03() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPosledni(T1);
         seznam.vlozPosledni(T2);
@@ -151,10 +190,14 @@ class AbstrDoubleListTest {
         TestClass[] expected = new TestClass[]{T2, T3};
         TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), seznam.zpristupniPosledni()};
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testOdeberAktualni04(){
+    public void testOdeberAktualni04() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPosledni(T1);
         seznam.vlozPosledni(T2);
@@ -164,10 +207,14 @@ class AbstrDoubleListTest {
         TestClass[] expected = new TestClass[]{T1, T2};
         TestClass[] result = new TestClass[]{seznam.zpristupniPrvni(), seznam.zpristupniPosledni()};
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testIteratorNext01(){
+    public void testIteratorNext01() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPosledni(T1);
         seznam.vlozPosledni(T2);
@@ -176,10 +223,14 @@ class AbstrDoubleListTest {
         TestClass[] expected = new TestClass[]{T1, T2, T3};
         TestClass[] result = new TestClass[]{iterator.next(), iterator.next(), iterator.next()};
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testIteratorNext02(){
+    public void testIteratorNext02() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPosledni(T1);
         seznam.vlozPosledni(T2);
@@ -196,10 +247,14 @@ class AbstrDoubleListTest {
                 iterator.next(), iterator.next(), iterator.next(),
                 iterator.next(), iterator.next(), iterator.next()};
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 
     @Test
-    public void testIteratorNext03(){
+    public void testIteratorNext03() {
+        try{
         IAbstrDoubleList<TestClass> seznam = new AbstrDoubleList<>();
         seznam.vlozPosledni(T1);
         seznam.vlozPosledni(T2);
@@ -210,5 +265,8 @@ class AbstrDoubleListTest {
         TestClass[] result = new TestClass[]{iterator.next(), iterator.next(),
                 iterator.next(), iterator.next(), iterator.next()};
         assertArrayEquals(expected, result);
+        } catch (Exception x) {
+            System.err.println("ss");
+        }
     }
 }

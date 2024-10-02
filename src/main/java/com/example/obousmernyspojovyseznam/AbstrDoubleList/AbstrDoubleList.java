@@ -3,10 +3,9 @@ package com.example.obousmernyspojovyseznam.AbstrDoubleList;
 import java.util.Iterator;
 
 public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
-
+    //TODO kontrolovat všude null a vyhazovat chyby? - asi jo. je mu to jedno
     private Prvek<T> prvni;
     private Prvek<T> aktualni;
-    //private int pocet = 0;
 
     private static class Prvek<T> {
         private Prvek<T> predchozi;
@@ -24,7 +23,6 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
     public void zrus() {
         prvni = null;
         aktualni = null;
-        //pocet = 0;
     }
 
     @Override
@@ -33,15 +31,13 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
     }
 
     @Override
-    public void vlozPrvni(T data) {
+    public void vlozPrvni(T data) throws AbstrDoubleListException {
 
         if (data == null) {
-            //TODO přidat vyhazování chyby
-            System.err.println("??");
-            return;
+            throw new AbstrDoubleListException("Nelze vložit null");
         }
 
-        if (prvni != null) {
+        if (!jePrazdny()) {
             //vložení prvního při počtu 1 a více
             Prvek<T> novyPrvek = new Prvek<>(prvni.predchozi, data, prvni);
             Prvek<T> posledni = prvni.predchozi;
@@ -59,12 +55,10 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
     }
 
     @Override
-    public void vlozPosledni(T data) {
+    public void vlozPosledni(T data) throws AbstrDoubleListException {
 
         if (data == null) {
-            //TODO přidat vyhazování chyby
-            System.err.println("??");
-            return;
+            throw new AbstrDoubleListException("Nelze vložit null");
         }
 
         if (prvni != null) {
@@ -82,11 +76,11 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
     }
 
     @Override
-    public void vlozNaslednika(T data) {
-        if (data == null || aktualni == null) {
-            //TODO vyhazovat chybu a rozdělit na 2 ify, kde bude specifická chyba
-            System.err.println("???");
-            return;
+    public void vlozNaslednika(T data) throws AbstrDoubleListException {
+        if (data == null) {
+            throw new AbstrDoubleListException("Nelze vkládat null");
+        }else if(aktualni == null){
+            throw new AbstrDoubleListException("Není nastaven aktuální prvek");
         }
 
         if (prvni.predchozi == aktualni) {
@@ -102,11 +96,11 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
     }
 
     @Override
-    public void vlozPredchudce(T data) {
-        if (data == null || aktualni == null) {
-            //TODO vyhazovat chybu a rozdělit na 2 ify, kde bude specifická chyba
-            System.err.println("???");
-            return;
+    public void vlozPredchudce(T data) throws AbstrDoubleListException{
+        if (data == null) {
+            throw new AbstrDoubleListException("Nelze vkládat null");
+        }else if(aktualni == null){
+            throw new AbstrDoubleListException("Není nastaven aktuální prvek");
         }
 
         if (aktualni == prvni) {
@@ -122,30 +116,50 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
     }
 
     @Override
-    public T zpristupniAktualni() {
+    public T zpristupniAktualni() throws AbstrDoubleListException {
+        if (jePrazdny()) {
+            throw new AbstrDoubleListException("Seznam je prázdný a tím pádem aktuální není nastaven");
+        }
         return aktualni.prvek;
     }
 
     @Override
-    public T zpristupniPrvni() {
+    public T zpristupniPrvni() throws AbstrDoubleListException {
+        if (jePrazdny()) {
+            throw new AbstrDoubleListException("Seznam je prázdný - nelze zpřístupnit první");
+        }
         aktualni = prvni;
         return aktualni.prvek;
     }
 
     @Override
-    public T zpristupniPosledni() {
+    public T zpristupniPosledni() throws AbstrDoubleListException {
+        if (jePrazdny()) {
+            throw new AbstrDoubleListException("Seznam je prázdný - nelze zpřístupnit první");
+
+        }
         aktualni = prvni.predchozi;
         return aktualni.prvek;
     }
 
     @Override
-    public T zpristupniNaslednika() {
+    public T zpristupniNaslednika() throws AbstrDoubleListException {
+        if (jePrazdny()) {
+            throw new AbstrDoubleListException("Seznam je prázdný - nelze zpřístupnit následníka");
+        } else if (aktualni == null) {
+            throw new AbstrDoubleListException("Není nastaven aktuální prvek");
+        }
         aktualni = aktualni.nasledujici;
         return aktualni.prvek;
     }
 
     @Override
-    public T zpristupniPredchudce() {
+    public T zpristupniPredchudce() throws AbstrDoubleListException {
+        if (jePrazdny()) {
+            throw new AbstrDoubleListException("Seznam je prázdný - nelze zpřístupnit předchůdce");
+        } else if (aktualni == null) {
+            throw new AbstrDoubleListException("Není nastaven aktuální prvek");
+        }
         aktualni = aktualni.predchozi;
         return aktualni.prvek;
     }
@@ -154,7 +168,7 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
      * odebere prvek mezi dalšími prvky, které spojí a vátí data z prvku
      */
     private T odeber(Prvek<T> odebrany) {
-        T odebranyPrvek = prvni.prvek;
+        T odebranyPrvek = odebrany.prvek;
 
         Prvek<T> predOdebranym = odebrany.predchozi;
         Prvek<T> zaOdebranym = odebrany.nasledujici;
@@ -169,41 +183,47 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
     }
 
     @Override
-    public T odeberAktualni() {
-        //TODO zeptat se, co s aktuálním, jestli po odstranění nechat null, nebo posunout na další/předchozí
-        //TODO implementovat tady odeber()
-        if (aktualni == null) {
-            System.err.println("není nastaven aktuální");
-            return null;
-        }
-        if (prvni == prvni.predchozi) {
-            zrus();
+    public T odeberAktualni() throws AbstrDoubleListException {
+
+        if (jePrazdny()) {
+            throw new AbstrDoubleListException("Seznam je prázdný - nelze odebrat aktuální");
+        } else if (aktualni == null) {
+            throw new AbstrDoubleListException("Není nastaven aktuální prvek");
         }
 
-        if (aktualni == prvni) {
-            return odeberPrvni();
-        }
-
-        T odebrany = aktualni.prvek;
-
-        Prvek<T> predAktualnim = aktualni.predchozi;
-        Prvek<T> zaAktualnim = aktualni.nasledujici;
-
-        aktualni = null;
-
-        predAktualnim.nasledujici = zaAktualnim;
-        zaAktualnim.predchozi = predAktualnim;
+        T odebrany = odeber(aktualni);
+        aktualni = prvni;
+//
+//        if (aktualni == null) {
+//            System.err.println("není nastaven aktuální");
+//            return null;
+//        }
+//        if (prvni == prvni.predchozi) {
+//            zrus();
+//        }
+//
+//        if (aktualni == prvni) {
+//            return odeberPrvni();
+//        }
+//
+//        T odebrany = aktualni.prvek;
+//
+//        Prvek<T> predAktualnim = aktualni.predchozi;
+//        Prvek<T> zaAktualnim = aktualni.nasledujici;
+//
+//        aktualni = null;
+//
+//        predAktualnim.nasledujici = zaAktualnim;
+//        zaAktualnim.predchozi = predAktualnim;
 
 
         return odebrany;
     }
 
     @Override
-    public T odeberPrvni() {
+    public T odeberPrvni() throws AbstrDoubleListException {
         if (jePrazdny()) {
-            //TODO vyhazovat chybu?
-            System.err.println("prázdný list");
-            return null;
+            throw new AbstrDoubleListException("Seznam je prázdný - nelze odebrat první");
         } else if (prvni == prvni.predchozi) {
             T odebranyPrvek = prvni.prvek;
             zrus();
@@ -220,10 +240,9 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
     }
 
     @Override
-    public T odeberPosledni() {
+    public T odeberPosledni() throws AbstrDoubleListException {
         if (jePrazdny()) {
-            System.err.println("prázdný seznam");
-            return null;
+            throw new AbstrDoubleListException("Seznam je prázdný - nelze odebrat poslední");
         }
         if (prvni == prvni.predchozi) {
             T odebranyPrvek = prvni.prvek;
@@ -237,11 +256,11 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
     }
 
     @Override
-    public T odeberNaslednika() {
-        if (aktualni == null) {
-            //TODO přidat vyhazování chyby
-            System.err.println("není aktuální");
-            return null;
+    public T odeberNaslednika() throws AbstrDoubleListException {
+        if (jePrazdny()) {
+            throw new AbstrDoubleListException("Seznam je prázdný - nelze odebrat následníka");
+        } else if (aktualni == null) {
+            throw new AbstrDoubleListException("Není nastaven aktuální prvek");
         }
         if (prvni == prvni.predchozi) {
             T odebranyPrvek = prvni.prvek;
@@ -253,11 +272,11 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
     }
 
     @Override
-    public T odeberPredchudce() {
-        if (aktualni == null) {
-            //TODO přidat vyhazování chyby
-            System.err.println("není aktuální");
-            return null;
+    public T odeberPredchudce() throws AbstrDoubleListException {
+        if (jePrazdny()) {
+            throw new AbstrDoubleListException("Seznam je prázdný - nelze odebrat předchůdce");
+        } else if (aktualni == null) {
+            throw new AbstrDoubleListException("Není nastaven aktuální prvek");
         }
         if (prvni == prvni.predchozi) {
             T odebranyPrvek = prvni.prvek;
@@ -283,10 +302,10 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
             @Override
             public T next() {
                 if (jePrazdny()) {
-                    //TODO vyhazovat chybu?
                     System.err.println("prázdné pole");
                     return null;
                 }
+
                 if (jePrvniIterace) {
                     jePrvniIterace = false;
                     return nastaveny.prvek;
@@ -299,30 +318,6 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
                     return null;
                 }
             }
-
-//            public boolean hasPrevious() {
-//                return nastaveny != prvni;
-//            }
-//            //TODO zeptat se jak má fungovat iterace, jestli je možnost iterovat zároveň dopředu a
-//            // dozadu, nebo jen jedno a má se loopovat, když je na sebe navázaný?
-//            public T previous() {
-//                if (jePrazdny()) {
-//                    //TODO vyhazovat chybu?
-//                    System.err.println("prázdné pole");
-//                    return null;
-//                }
-//                if (jePrvniIterace) {
-//                    jePrvniIterace = false;
-//                    return nastaveny.prvek;
-//                }
-//                if (hasPrevious()) {
-//                    nastaveny = nastaveny.predchozi;
-//                    return nastaveny.prvek;
-//                } else {
-//                    System.err.println("konec seznamu");
-//                    return null;
-//                }
-//            }
         };
     }
 }
