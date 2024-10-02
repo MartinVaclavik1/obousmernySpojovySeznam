@@ -152,19 +152,61 @@ public class Obyvatele implements IObyvatele {
 
     @Override
     public void zobrazObce(enumKraj kraj) {
+        //výpis v případě, že je kraj nula
+        //TODO zeptat se, jestli to je myšlený jako prázdný kraj, nebo nula jako nula
+        if(kraj == enumKraj.NULA){
+            for (IAbstrDoubleList<Obec> list: pole){
+                Iterator<Obec> iterator = list.iterator();
+                while (iterator.hasNext()){
+                    System.out.println(iterator.next().toString());
+                }
+            }
+            return;
+        }
 
+        Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next().toString());
+        }
     }
 
     @Override
     public void zobrazObceNadPrumer(enumKraj kraj) {
+        float prumer = zjistiPrumer(kraj);
+        //TODO zeptat se co znamená nula
+        if(kraj == enumKraj.NULA){
+            for (IAbstrDoubleList<Obec> list: pole){
+                Iterator<Obec> iterator = list.iterator();
+                while (iterator.hasNext()){
+                    Obec dalsi = iterator.next();
+                    if(dalsi.getCelkem() > prumer){
+                        System.out.println(dalsi);
+                    }
+                }
+            }
+            return;
+        }
 
+        Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
+        while (iterator.hasNext()){
+
+            Obec dalsi = iterator.next();
+            if(dalsi.getCelkem() > prumer){
+                System.out.println(dalsi);
+            }
+        }
     }
 
     @Override
     public void zrus(enumKraj kraj) {
-        for (IAbstrDoubleList<Obec> obec : pole) {
-            obec.zrus();
+        //TODO nula
+        if(kraj == enumKraj.NULA){
+            for (IAbstrDoubleList<Obec> obec : pole){
+                obec.zrus();
+            }
+            return;
         }
+        pole[kraj.getIdKraje()-1].zrus();
     }
 
     private void zmenVelikostPole(int idKraje) {

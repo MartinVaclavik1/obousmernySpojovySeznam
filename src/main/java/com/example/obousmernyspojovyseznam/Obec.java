@@ -1,6 +1,8 @@
 package com.example.obousmernyspojovyseznam;
 
-public class Obec {
+import java.io.Serializable;
+
+public class Obec implements Serializable {
     //možná dát PSČ string?
     private final int psc;
     private final String obec;
@@ -46,5 +48,17 @@ public class Obec {
     public void setPocetZen(int pocetZen) {
         this.pocetZen = pocetZen;
         pocetCelkem = pocetMuzu + pocetZen;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Obec{");
+        sb.append("psc=").append(psc);
+        sb.append(", obec='").append(obec).append('\'');
+        sb.append(", pocetMuzu=").append(pocetMuzu);
+        sb.append(", pocetZen=").append(pocetZen);
+        sb.append(", pocetCelkem=").append(pocetCelkem);
+        sb.append('}');
+        return sb.toString();
     }
 }

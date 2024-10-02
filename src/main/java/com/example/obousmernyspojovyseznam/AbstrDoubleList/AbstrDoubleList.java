@@ -270,7 +270,7 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             Prvek<T> nastaveny = prvni;
             boolean jePrvniIterace = true;
 
@@ -300,29 +300,29 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
                 }
             }
 
-            public boolean hasPrevious() {
-                return nastaveny != prvni;
-            }
-            //TODO zeptat se jak má fungovat iterace, jestli je možnost iterovat zároveň dopředu a
-            // dozadu, nebo jen jedno a má se loopovat, když je na sebe navázaný?
-            public T previous() {
-                if (jePrazdny()) {
-                    //TODO vyhazovat chybu?
-                    System.err.println("prázdné pole");
-                    return null;
-                }
-                if (jePrvniIterace) {
-                    jePrvniIterace = false;
-                    return nastaveny.prvek;
-                }
-                if (hasPrevious()) {
-                    nastaveny = nastaveny.predchozi;
-                    return nastaveny.prvek;
-                } else {
-                    System.err.println("konec seznamu");
-                    return null;
-                }
-            }
+//            public boolean hasPrevious() {
+//                return nastaveny != prvni;
+//            }
+//            //TODO zeptat se jak má fungovat iterace, jestli je možnost iterovat zároveň dopředu a
+//            // dozadu, nebo jen jedno a má se loopovat, když je na sebe navázaný?
+//            public T previous() {
+//                if (jePrazdny()) {
+//                    //TODO vyhazovat chybu?
+//                    System.err.println("prázdné pole");
+//                    return null;
+//                }
+//                if (jePrvniIterace) {
+//                    jePrvniIterace = false;
+//                    return nastaveny.prvek;
+//                }
+//                if (hasPrevious()) {
+//                    nastaveny = nastaveny.predchozi;
+//                    return nastaveny.prvek;
+//                } else {
+//                    System.err.println("konec seznamu");
+//                    return null;
+//                }
+//            }
         };
     }
 }
