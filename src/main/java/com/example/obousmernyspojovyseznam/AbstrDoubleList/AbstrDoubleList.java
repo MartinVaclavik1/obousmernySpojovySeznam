@@ -191,21 +191,16 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
             throw new AbstrDoubleListException("Není nastaven aktuální prvek");
         }
 
+        if (aktualni == prvni) {
+            return odeberPrvni();
+        }
+
         T odebrany = odeber(aktualni);
         aktualni = prvni;
 //
-//        if (aktualni == null) {
-//            System.err.println("není nastaven aktuální");
-//            return null;
-//        }
-//        if (prvni == prvni.predchozi) {
-//            zrus();
-//        }
-//
-//        if (aktualni == prvni) {
-//            return odeberPrvni();
-//        }
-//
+        if (prvni == prvni.predchozi) {
+            zrus();
+        }
 //        T odebrany = aktualni.prvek;
 //
 //        Prvek<T> predAktualnim = aktualni.predchozi;

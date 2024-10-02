@@ -4,6 +4,7 @@ import com.example.obousmernyspojovyseznam.ENUMS.enumKraj;
 import com.example.obousmernyspojovyseznam.ENUMS.enumPozice;
 import com.example.obousmernyspojovyseznam.Obec;
 import com.example.obousmernyspojovyseznam.Obyvatele.Obyvatele;
+import com.example.obousmernyspojovyseznam.Obyvatele.ObyvateleException;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
@@ -21,7 +23,6 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.util.Iterator;
-import java.util.Objects;
 
 
 public class ProgObyvatele extends Application {
@@ -128,36 +129,47 @@ public class ProgObyvatele extends Application {
 
     private EventHandler<ActionEvent> importujData() {
         return EventHandler -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Resource File");
-            fileChooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("Text Files", "*.csv"));
-            File soubor = fileChooser.showOpenDialog(new Stage());
-            if (soubor != null) {
-                obyvatele.importData(String.valueOf(soubor));
+            try {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Open Resource File");
+                fileChooser.getExtensionFilters().add(
+                        new FileChooser.ExtensionFilter("Text Files", "*.csv"));
+                File soubor = fileChooser.showOpenDialog(new Stage());
+                if (soubor != null) {
+                    obyvatele.importData(String.valueOf(soubor));
+                }
+                aktualizujListView();
+            }catch (ObyvateleException x){
+                chybovaHlaska(x.getMessage());
             }
-            aktualizujListView();
         };
     }
 
     private void aktualizujListView() {
-        observableList.clear();
-        Obec prvni = obyvatele.zpristupniObec(enumPozice.PRVNI, kraj);
-        Obec aktualni = obyvatele.zpristupniObec(enumPozice.NASLEDNIK, kraj);
-        if (prvni != null) {
-            observableList.add(prvni.toString());
+        try {
+            observableList.clear();
+            Obec prvni = obyvatele.zpristupniObec(enumPozice.PRVNI, kraj);
+            Obec aktualni = obyvatele.zpristupniObec(enumPozice.NASLEDNIK, kraj);
+            if (prvni != null) {
+                observableList.add(prvni.toString());
 
-            while (aktualni != prvni) {
-                observableList.add(aktualni.toString());
-                aktualni = obyvatele.zpristupniObec(enumPozice.NASLEDNIK, kraj);
+                while (aktualni != prvni) {
+                    observableList.add(aktualni.toString());
+                    aktualni = obyvatele.zpristupniObec(enumPozice.NASLEDNIK, kraj);
+                }
             }
+        }catch (ObyvateleException x){
+            chybovaHlaska(x.getMessage());
         }
-
     }
 
     private EventHandler<ActionEvent> vlozObec() {
         return EventHandler -> {
-
+            try {
+                obyvatele.vlozObec(null,null,null);
+            } catch (ObyvateleException x) {
+                chybovaHlaska(x.getMessage());
+            }
         };
     }
 
@@ -166,5 +178,11 @@ public class ProgObyvatele extends Application {
         button.setOnAction(handler);
         button.setPrefWidth(70);
         return button;
+    }
+
+    private void chybovaHlaska(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(message);
+        alert.showAndWait();
     }
 }

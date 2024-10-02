@@ -1,6 +1,7 @@
 package com.example.obousmernyspojovyseznam.Obyvatele;
 
 import com.example.obousmernyspojovyseznam.AbstrDoubleList.AbstrDoubleList;
+import com.example.obousmernyspojovyseznam.AbstrDoubleList.AbstrDoubleListException;
 import com.example.obousmernyspojovyseznam.AbstrDoubleList.IAbstrDoubleList;
 import com.example.obousmernyspojovyseznam.ENUMS.enumKraj;
 import com.example.obousmernyspojovyseznam.ENUMS.enumPozice;
@@ -8,14 +9,14 @@ import com.example.obousmernyspojovyseznam.Obec;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Iterator;
 
 public class Obyvatele implements IObyvatele {
-    //TODO zeptat se, jestli pole má mít fixní velikost (14), nebo zvětšovat při vkládání
-    private IAbstrDoubleList<Obec>[] pole = new AbstrDoubleList[14];
+    private final IAbstrDoubleList<Obec>[] pole = new AbstrDoubleList[14];
 
     @Override
-    public int importData(String soubor) {
+    public int importData(String soubor) throws ObyvateleException {
         int korektneNactene = 0;
         try (BufferedReader nactenySoubor = new BufferedReader(new FileReader((soubor)))) {
             String radek = nactenySoubor.readLine();
@@ -38,43 +39,44 @@ public class Obyvatele implements IObyvatele {
                 //System.out.println(radek);
                 radek = nactenySoubor.readLine();
             }
-            //TODO chytat konkrétní chyby
-        } catch (Exception x) {
-            //TODO vyhazovat chybu
-            System.err.println("chyba při načítání souboru");
+        } catch (IOException x) {
+            throw new ObyvateleException("Chyba v načítání souboru");
+        } catch (AbstrDoubleListException x) {
+            throw new ObyvateleException(x.getMessage());
         }
         return korektneNactene;
     }
 
     @Override
-    public void vlozObec(Obec obec, enumPozice pozice, enumKraj kraj) {
+    public void vlozObec(Obec obec, enumPozice pozice, enumKraj kraj) throws ObyvateleException {
+        if (obec == null || pozice == null || kraj == null) {
+            throw new ObyvateleException("Nelze vkládat null");
+        }
 
-        //TODO provizorni
         try {
             switch (pozice) {
                 case PRVNI -> pole[kraj.getIdKraje() - 1].vlozPrvni(obec);
                 case POSLEDNI -> pole[kraj.getIdKraje() - 1].vlozPosledni(obec);
                 case PREDCHUDCE -> pole[kraj.getIdKraje() - 1].vlozPredchudce(obec);
                 case NASLEDNIK -> pole[kraj.getIdKraje() - 1].vlozNaslednika(obec);
-                case AKTUALNI -> //TODO vyhazovat chybu?
-                        System.out.println("Nelze vložit, jako aktuální");
+                case AKTUALNI -> throw new ObyvateleException("Nelze vložit jako aktuální");
             }
 
-        } catch (Exception x) {
-            System.err.println("ss");
+        } catch (AbstrDoubleListException x) {
+            throw new ObyvateleException(x.getMessage());
         }
 
     }
 
     @Override
-    public Obec zpristupniObec(enumPozice pozice, enumKraj kraj) {
-        //TODO chytat, když bude pozice null?
-        if (pole[kraj.getIdKraje() - 1] == null) {
-            System.err.println("Kraj je prázdný");
-            return null;
+    public Obec zpristupniObec(enumPozice pozice, enumKraj kraj) throws ObyvateleException {
+        if (pozice == null || kraj == null) {
+            throw new ObyvateleException("Nelze vkládat null");
         }
 
-        //TODO provizorni
+        if (pole[kraj.getIdKraje() - 1] == null) {
+            throw new ObyvateleException("Nelze zpřístupnit prázdný kraj");
+        }
         try {
             switch (pozice) {
                 case PRVNI -> {
@@ -97,15 +99,20 @@ public class Obyvatele implements IObyvatele {
                 }
 
             }
-        } catch (Exception x) {
-            System.err.println("ss");
+        } catch (AbstrDoubleListException x) {
+            throw new ObyvateleException(x.getMessage());
         }
-        return null;
     }
 
     @Override
-    public Obec odeberObec(enumPozice pozice, enumKraj kraj) {
-        //TODO stejný jak u zpřístupnění?
+    public Obec odeberObec(enumPozice pozice, enumKraj kraj) throws ObyvateleException {
+        if (pozice == null || kraj == null) {
+            throw new ObyvateleException("Nelze vkládat null");
+        }
+
+        if (pole[kraj.getIdKraje() - 1] == null) {
+            throw new ObyvateleException("Nelze odebrat v prázdném kraji");
+        }
 
         try {
             switch (pozice) {
@@ -128,16 +135,16 @@ public class Obyvatele implements IObyvatele {
                     return null;
                 }
             }
-        } catch (Exception x) {
-            System.err.println("ss");
+        } catch (AbstrDoubleListException x) {
+            throw new ObyvateleException(x.getMessage());
         }
-
-        return null;
     }
 
     @Override
-    public float zjistiPrumer(enumKraj kraj) {
-
+    public float zjistiPrumer(enumKraj kraj) throws ObyvateleException {
+        if(kraj == null){
+            throw new ObyvateleException("Nelze vkládat null");
+        }
         float prumer = 0;
         int pocet = 0;
         //TODO zeptat se, jestli hodnota rovna nule je myšlen průměr, nebo nula jako kraj
@@ -163,9 +170,14 @@ public class Obyvatele implements IObyvatele {
     }
 
     @Override
-    public void zobrazObce(enumKraj kraj) {
-        //výpis v případě, že je kraj nula
+    public void zobrazObce(enumKraj kraj) throws ObyvateleException {
+
         //TODO zeptat se, jestli to je myšlený jako prázdný kraj, nebo nula jako nula
+        if(kraj == null){
+            throw new ObyvateleException("Nelze vkládat null");
+        }
+
+        //výpis v případě, že je kraj nula
         if (kraj == enumKraj.NULA) {
             for (IAbstrDoubleList<Obec> list : pole) {
                 Iterator<Obec> iterator = list.iterator();
@@ -183,7 +195,11 @@ public class Obyvatele implements IObyvatele {
     }
 
     @Override
-    public void zobrazObceNadPrumer(enumKraj kraj) {
+    public void zobrazObceNadPrumer(enumKraj kraj) throws ObyvateleException {
+        if(kraj == null){
+            throw new ObyvateleException("Nelze vkládat null");
+        }
+
         float prumer = zjistiPrumer(kraj);
         //TODO zeptat se co znamená nula
         if (kraj == enumKraj.NULA) {
@@ -210,7 +226,12 @@ public class Obyvatele implements IObyvatele {
     }
 
     @Override
-    public void zrus(enumKraj kraj) {
+    public void zrus(enumKraj kraj) throws ObyvateleException {
+
+        if(kraj == null){
+            throw new ObyvateleException("Nelze vkládat null");
+        }
+
         //TODO nula
         if (kraj == enumKraj.NULA) {
             for (IAbstrDoubleList<Obec> obec : pole) {

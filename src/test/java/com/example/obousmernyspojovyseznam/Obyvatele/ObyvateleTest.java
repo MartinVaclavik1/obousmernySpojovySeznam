@@ -9,13 +9,13 @@ class ObyvateleTest {
     private final String cestaKCSVSouboru = "C:\\Users\\admin\\OneDrive - Univerzita Pardubice\\Plocha\\Škola\\2\\Datové Struktury\\Sem.A\\kraje.csv";
 
     @Test
-    public void testImportData01(){
+    public void testImportData01() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
     }
 
     @Test
-    public void testZjistiPrumer01(){
+    public void testZjistiPrumer01() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
         float prumer = obyvatele.zjistiPrumer(enumKraj.NULA);
@@ -23,7 +23,7 @@ class ObyvateleTest {
     }
 
     @Test
-    public void testZjistiPrumer02(){
+    public void testZjistiPrumer02() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
         float prumer = obyvatele.zjistiPrumer(enumKraj.HLAVNYMESTOPRAHA);
@@ -31,14 +31,14 @@ class ObyvateleTest {
     }
 
     @Test
-    public void testZobrazObce01(){
+    public void testZobrazObce01() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
         obyvatele.zobrazObce(enumKraj.NULA);
     }
 
     @Test
-    public void testZobrazObceNadPrumer01(){
+    public void testZobrazObceNadPrumer01() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
         System.out.println(obyvatele.zjistiPrumer(enumKraj.NULA));
@@ -46,7 +46,7 @@ class ObyvateleTest {
     }
 
     @Test
-    public void testZobrazObceNadPrumer02(){
+    public void testZobrazObceNadPrumer02() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
         System.out.println(obyvatele.zjistiPrumer(enumKraj.KARLOVARSKY));
@@ -54,7 +54,7 @@ class ObyvateleTest {
     }
 
     @Test
-    public void testZobrazObceNadPrumer03(){
+    public void testZobrazObceNadPrumer03() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
         System.out.println(obyvatele.zjistiPrumer(enumKraj.MORAVSKOSLEZSKY));
