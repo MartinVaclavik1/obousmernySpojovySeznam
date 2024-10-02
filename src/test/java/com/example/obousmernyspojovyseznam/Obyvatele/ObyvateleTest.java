@@ -26,7 +26,7 @@ class ObyvateleTest {
     public void testZjistiPrumer02() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
-        float prumer = obyvatele.zjistiPrumer(enumKraj.HLAVNYMESTOPRAHA);
+        float prumer = obyvatele.zjistiPrumer(enumKraj.HLAVNIMESTOPRAHA);
         System.out.println(prumer);
     }
 

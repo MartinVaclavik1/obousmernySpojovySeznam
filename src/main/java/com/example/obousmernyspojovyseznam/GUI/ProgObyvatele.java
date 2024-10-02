@@ -12,17 +12,17 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import javafx.util.Pair;
 
 import java.io.*;
-import java.util.Iterator;
+import java.util.Optional;
 
 
 public class ProgObyvatele extends Application {
@@ -48,11 +48,13 @@ public class ProgObyvatele extends Application {
 
         vBox.getChildren().add(newButton("importuj data", importujData()));
         vBox.getChildren().add(newButton("vlož obec", vlozObec()));
+        vBox.getChildren().add(newButton("odeber obec", odeberObec()));
         vBox.getChildren().add(newButton("ulož", uloz()));
         vBox.getChildren().add(newButton("načti", nacti()));
 
+
         ChoiceBox<enumKraj> choiceBox = new ChoiceBox<>();
-        choiceBox.getItems().addAll(enumKraj.HLAVNYMESTOPRAHA, enumKraj.JIHOCESKY,
+        choiceBox.getItems().addAll(enumKraj.HLAVNIMESTOPRAHA, enumKraj.JIHOCESKY,
                 enumKraj.JIHOMORAVSKY, enumKraj.KARLOVARSKY, enumKraj.VYSOCINA, enumKraj.KRALOVEHRADECKY,
                 enumKraj.LIBERECKY, enumKraj.MORAVSKOSLEZSKY, enumKraj.OLOMOUCKY, enumKraj.PARDUBICKY,
                 enumKraj.PLZENSKY, enumKraj.STREDOCESKY, enumKraj.USTECKY, enumKraj.ZLINSKY);
@@ -76,6 +78,19 @@ public class ProgObyvatele extends Application {
         stage.setHeight(500);
         stage.setWidth(800);
         stage.show();
+    }
+
+    private EventHandler<ActionEvent> odeberObec() {
+        return EventHandler -> {
+            try {
+                Pair<enumPozice,enumKraj> poziceAKraj = dialogPoziceAKraj();
+                obyvatele.odeberObec(poziceAKraj.getKey(), poziceAKraj.getValue());
+
+                aktualizujListView();
+            } catch (ObyvateleException x) {
+                chybovaHlaska(x.getMessage());
+            }
+        };
     }
 
     private EventHandler<ActionEvent> nacti() {
@@ -139,7 +154,7 @@ public class ProgObyvatele extends Application {
                     obyvatele.importData(String.valueOf(soubor));
                 }
                 aktualizujListView();
-            }catch (ObyvateleException x){
+            } catch (ObyvateleException x) {
                 chybovaHlaska(x.getMessage());
             }
         };
@@ -158,25 +173,120 @@ public class ProgObyvatele extends Application {
                     aktualni = obyvatele.zpristupniObec(enumPozice.NASLEDNIK, kraj);
                 }
             }
-        }catch (ObyvateleException x){
-            chybovaHlaska(x.getMessage());
+        } catch (ObyvateleException x) {
+            //chybovaHlaska(x.getMessage());
         }
     }
 
     private EventHandler<ActionEvent> vlozObec() {
         return EventHandler -> {
             try {
-                obyvatele.vlozObec(null,null,null);
+                Obec obec = dialogObec();
+                Pair<enumPozice,enumKraj> poziceAKraj = dialogPoziceAKraj();
+                obyvatele.vlozObec(obec, poziceAKraj.getKey(), poziceAKraj.getValue());
+
+                aktualizujListView();
             } catch (ObyvateleException x) {
                 chybovaHlaska(x.getMessage());
             }
         };
     }
 
+    private Obec dialogObec() {
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(20, 10, 10, 10));
+        gridPane.add(new Label("PSČ:"), 0, 2);
+        gridPane.add(new Label("Název obce:"), 0, 3);
+        gridPane.add(new Label("Počet mužů:"), 0, 4);
+        gridPane.add(new Label("Počet žen:"), 0, 5);
+
+        TextField pscTXT = new TextField();
+        TextField nazevTXT = new TextField();
+        TextField pocetMTXT = new TextField();
+        TextField pocetZTXT = new TextField();
+
+        gridPane.add(pscTXT, 1, 2);
+        gridPane.add(nazevTXT, 1, 3);
+        gridPane.add(pocetMTXT, 1, 4);
+        gridPane.add(pocetZTXT, 1, 5);
+
+        Dialog<Obec> dialog = new Dialog<>();
+
+
+        dialog.getDialogPane().setContent(gridPane);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(new Callback<ButtonType, Obec>() {
+            @Override
+            public Obec call(ButtonType buttonType) {
+                if (buttonType == ButtonType.OK) {
+                    try {
+                        int psc = Integer.parseInt(pscTXT.getText());
+                        int pocetM = Integer.parseInt(pocetMTXT.getText());
+                        int pocetZ = Integer.parseInt(pocetZTXT.getText());
+                        return new Obec(psc,nazevTXT.getText(),pocetM,pocetZ);
+                    }catch (Exception x){
+                        chybovaHlaska("Chyba v zadávání hodnot. Zadávejte celá čísla");
+                    }
+                }
+                return null;
+            }
+        });
+
+        Optional<Obec> obec = dialog.showAndWait();
+        return obec.orElse(null);
+    }
+
+    private Pair<enumPozice, enumKraj> dialogPoziceAKraj() {
+
+        ChoiceBox<enumKraj> kraje = new ChoiceBox<>();
+        kraje.getItems().addAll(enumKraj.HLAVNIMESTOPRAHA, enumKraj.JIHOCESKY,
+                enumKraj.JIHOMORAVSKY, enumKraj.KARLOVARSKY, enumKraj.VYSOCINA, enumKraj.KRALOVEHRADECKY,
+                enumKraj.LIBERECKY, enumKraj.MORAVSKOSLEZSKY, enumKraj.OLOMOUCKY, enumKraj.PARDUBICKY,
+                enumKraj.PLZENSKY, enumKraj.STREDOCESKY, enumKraj.USTECKY, enumKraj.ZLINSKY);
+        kraje.getSelectionModel().selectFirst();
+
+        ChoiceBox<enumPozice> pozice = new ChoiceBox<>();
+        pozice.getItems().addAll(enumPozice.PRVNI, enumPozice.POSLEDNI, enumPozice.NASLEDNIK,
+                enumPozice.PREDCHUDCE, enumPozice.AKTUALNI);
+        pozice.getSelectionModel().selectFirst();
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(20, 10, 10, 10));
+        gridPane.add(new Label("Pozice:"), 0, 2);
+        gridPane.add(new Label("Kraj:"), 0, 3);
+        gridPane.add(pozice, 1, 2);
+        gridPane.add(kraje, 1, 3);
+
+        Dialog<Pair<enumPozice, enumKraj>> dialog = new Dialog<>();
+
+
+        dialog.getDialogPane().setContent(gridPane);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(new Callback<ButtonType, Pair<enumPozice, enumKraj>>() {
+            @Override
+            public Pair<enumPozice, enumKraj> call(ButtonType buttonType) {
+                if (buttonType == ButtonType.OK) {
+                    return new Pair<>(pozice.getSelectionModel().getSelectedItem(),
+                            kraje.getSelectionModel().getSelectedItem());
+                }
+                return null;
+            }
+        });
+
+        Optional<Pair<enumPozice, enumKraj>> vysledek = dialog.showAndWait();
+        return vysledek.orElse(null);
+    }
+
     private Button newButton(String nazev, EventHandler<ActionEvent> handler) {
         Button button = new Button(nazev);
         button.setOnAction(handler);
-        button.setPrefWidth(70);
+        button.setPrefWidth(150);
         return button;
     }
 

@@ -15,6 +15,12 @@ import java.util.Iterator;
 public class Obyvatele implements IObyvatele {
     private final IAbstrDoubleList<Obec>[] pole = new AbstrDoubleList[14];
 
+    public Obyvatele() {
+        for (int i = 0; i < pole.length; i++){
+            pole[i] = new AbstrDoubleList<>();
+        }
+    }
+
     @Override
     public int importData(String soubor) throws ObyvateleException {
         int korektneNactene = 0;
@@ -77,6 +83,7 @@ public class Obyvatele implements IObyvatele {
         if (pole[kraj.getIdKraje() - 1] == null) {
             throw new ObyvateleException("Nelze zpřístupnit prázdný kraj");
         }
+
         try {
             switch (pozice) {
                 case PRVNI -> {

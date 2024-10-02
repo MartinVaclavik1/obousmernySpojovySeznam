@@ -2,7 +2,7 @@ package com.example.obousmernyspojovyseznam.ENUMS;
 
 public enum enumKraj {
     NULA("nula", 0),
-    HLAVNYMESTOPRAHA("Hlavní město Praha",1),
+    HLAVNIMESTOPRAHA("Hlavní město Praha",1),
     JIHOCESKY("Jihočeský", 2),
     JIHOMORAVSKY("Jihomoravský", 3),
     KARLOVARSKY("Karlovarský", 4),
