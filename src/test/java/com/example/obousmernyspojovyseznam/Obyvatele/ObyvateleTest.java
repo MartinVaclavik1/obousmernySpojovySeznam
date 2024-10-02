@@ -1,4 +1,4 @@
-package com.example.obousmernyspojovyseznam;
+package com.example.obousmernyspojovyseznam.Obyvatele;
 
 import com.example.obousmernyspojovyseznam.ENUMS.enumKraj;
 import com.example.obousmernyspojovyseznam.Obyvatele.Obyvatele;

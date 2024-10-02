@@ -1,4 +1,4 @@
-package com.example.obousmernyspojovyseznam;
+package com.example.obousmernyspojovyseznam.AbstrDoubleList;
 
 import com.example.obousmernyspojovyseznam.AbstrDoubleList.AbstrDoubleList;
 import com.example.obousmernyspojovyseznam.AbstrDoubleList.IAbstrDoubleList;
