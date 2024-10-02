@@ -53,11 +53,11 @@ public class Obec implements Serializable {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Obec{");
-        sb.append("psc=").append(psc);
-        sb.append(", obec='").append(obec).append('\'');
-        sb.append(", pocetMuzu=").append(pocetMuzu);
-        sb.append(", pocetZen=").append(pocetZen);
-        sb.append(", pocetCelkem=").append(pocetCelkem);
+        sb.append("PSČ = ").append(psc);
+        sb.append(", obec = ").append(obec);
+        sb.append(", počet mužů = ").append(pocetMuzu);
+        sb.append(", počet žen = ").append(pocetZen);
+        sb.append(", počet celkem = ").append(pocetCelkem);
         sb.append('}');
         return sb.toString();
     }

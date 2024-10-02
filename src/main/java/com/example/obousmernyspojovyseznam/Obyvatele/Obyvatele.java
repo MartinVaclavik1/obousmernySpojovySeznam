@@ -12,7 +12,7 @@ import java.util.Iterator;
 
 public class Obyvatele implements IObyvatele {
     //TODO zeptat se, jestli pole má mít fixní velikost (14), nebo zvětšovat při vkládání
-    IAbstrDoubleList<Obec>[] pole;
+    private IAbstrDoubleList<Obec>[] pole;
 
     @Override
     public int importData(String soubor) {
