@@ -61,4 +61,10 @@ class ObyvateleTest {
         obyvatele.zobrazObceNadPrumer(enumKraj.MORAVSKOSLEZSKY);
     }
 
+    @Test
+    public void testnacti01() throws ObyvateleException {
+        Obyvatele obyvatele = new Obyvatele();
+        obyvatele.nacti("zaloha.bin");
+    }
+
 }

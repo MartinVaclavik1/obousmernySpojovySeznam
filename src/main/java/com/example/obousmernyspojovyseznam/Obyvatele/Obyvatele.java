@@ -6,17 +6,18 @@ import com.example.obousmernyspojovyseznam.AbstrDoubleList.IAbstrDoubleList;
 import com.example.obousmernyspojovyseznam.ENUMS.enumKraj;
 import com.example.obousmernyspojovyseznam.ENUMS.enumPozice;
 import com.example.obousmernyspojovyseznam.Obec;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class Obyvatele implements IObyvatele {
     private final IAbstrDoubleList<Obec>[] pole = new AbstrDoubleList[14];
 
     public Obyvatele() {
-        for (int i = 0; i < pole.length; i++){
+        for (int i = 0; i < pole.length; i++) {
             pole[i] = new AbstrDoubleList<>();
         }
     }
@@ -149,7 +150,7 @@ public class Obyvatele implements IObyvatele {
 
     @Override
     public float zjistiPrumer(enumKraj kraj) throws ObyvateleException {
-        if(kraj == null){
+        if (kraj == null) {
             throw new ObyvateleException("Nelze vkládat null");
         }
         float prumer = 0;
@@ -180,7 +181,7 @@ public class Obyvatele implements IObyvatele {
     public void zobrazObce(enumKraj kraj) throws ObyvateleException {
 
         //TODO zeptat se, jestli to je myšlený jako prázdný kraj, nebo nula jako nula
-        if(kraj == null){
+        if (kraj == null) {
             throw new ObyvateleException("Nelze vkládat null");
         }
 
@@ -203,7 +204,7 @@ public class Obyvatele implements IObyvatele {
 
     @Override
     public void zobrazObceNadPrumer(enumKraj kraj) throws ObyvateleException {
-        if(kraj == null){
+        if (kraj == null) {
             throw new ObyvateleException("Nelze vkládat null");
         }
 
@@ -235,7 +236,7 @@ public class Obyvatele implements IObyvatele {
     @Override
     public void zrus(enumKraj kraj) throws ObyvateleException {
 
-        if(kraj == null){
+        if (kraj == null) {
             throw new ObyvateleException("Nelze vkládat null");
         }
 
@@ -249,4 +250,66 @@ public class Obyvatele implements IObyvatele {
         pole[kraj.getIdKraje() - 1].zrus();
     }
 
+    public void uloz(String nazevSouboru) throws ObyvateleException {
+        try {
+            Objects.requireNonNull(pole);
+
+            ObjectOutputStream vystup =
+                    new ObjectOutputStream(
+                            new FileOutputStream(nazevSouboru));
+
+            for (int i = 0; i < pole.length; i++) {
+                Iterator<Obec> it = pole[i].iterator();
+                while (it.hasNext()) {
+                    vystup.writeInt(i);
+                    vystup.writeObject(it.next());
+                }
+            }
+            vystup.writeInt(-1);
+
+            vystup.close();
+        } catch (Exception x) {
+            throw new ObyvateleException("Chyba při ukládání souboru");
+        }
+    }
+
+    public void nacti(String nazevSouboru) throws ObyvateleException {
+
+        try {
+//            Objects.requireNonNull(pole);
+            ObjectInputStream vstup =
+                    new ObjectInputStream(
+                            new FileInputStream(nazevSouboru));
+            zrus(enumKraj.NULA);
+
+            int kraj = vstup.readInt();
+
+            while (kraj != -1) {
+                Obec obec = (Obec) vstup.readObject();
+                //System.out.println(obec);
+                if (obec != null) {
+                    pole[kraj].vlozPosledni(obec);
+                }
+
+                kraj = vstup.readInt();
+
+            }
+            vstup.close();
+
+        } catch (Exception x) {
+            throw new ObyvateleException("Chyba při načítání dat");
+        }
+    }
+
+    public ObservableList<String> dejDoObservableListu(enumKraj kraj){
+        ObservableList<String> observableList = FXCollections.observableArrayList();
+
+        Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
+
+        while (iterator.hasNext()){
+            observableList.add(iterator.next().toString());
+        }
+
+        return observableList;
+    }
 }

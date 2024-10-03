@@ -18,7 +18,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.Pair;
 
 import java.io.*;
@@ -26,10 +25,12 @@ import java.util.Optional;
 
 
 public class ProgObyvatele extends Application {
-    private ObservableList<String> observableList = FXCollections.observableArrayList();
-    private ListView<String> listView = new ListView<>(observableList);
-    private Obyvatele obyvatele = new Obyvatele();
+    private final ObservableList<String> observableList = FXCollections.observableArrayList();
+    private final ListView<String> listView = new ListView<>(observableList);
+    private final Obyvatele obyvatele = new Obyvatele();
     private enumKraj kraj;
+    private final ChoiceBox<enumKraj> choiceBox = new ChoiceBox<>();
+    private final String nazevSouboru = "zaloha.bin";
 
     public static void main(String[] args) {
         launch(args);
@@ -49,11 +50,12 @@ public class ProgObyvatele extends Application {
         vBox.getChildren().add(newButton("importuj data", importujData()));
         vBox.getChildren().add(newButton("vlož obec", vlozObec()));
         vBox.getChildren().add(newButton("odeber obec", odeberObec()));
+        vBox.getChildren().add(newButton("zpřístupni předchozí", zpristupniPredchozi()));
+        vBox.getChildren().add(newButton("zpřístupni obec", zpristupniObec()));
+        vBox.getChildren().add(newButton("zpřístupni následující", zpristupniNasledujici()));
         vBox.getChildren().add(newButton("ulož", uloz()));
         vBox.getChildren().add(newButton("načti", nacti()));
 
-
-        ChoiceBox<enumKraj> choiceBox = new ChoiceBox<>();
         choiceBox.getItems().addAll(enumKraj.HLAVNIMESTOPRAHA, enumKraj.JIHOCESKY,
                 enumKraj.JIHOMORAVSKY, enumKraj.KARLOVARSKY, enumKraj.VYSOCINA, enumKraj.KRALOVEHRADECKY,
                 enumKraj.LIBERECKY, enumKraj.MORAVSKOSLEZSKY, enumKraj.OLOMOUCKY, enumKraj.PARDUBICKY,
@@ -61,13 +63,10 @@ public class ProgObyvatele extends Application {
 
         choiceBox.getSelectionModel().selectFirst();
         kraj = choiceBox.getValue();
-        choiceBox.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                if (choiceBox.getSelectionModel().getSelectedItem() != null) {
-                    kraj = choiceBox.getSelectionModel().getSelectedItem();
-                    aktualizujListView();
-                }
+        choiceBox.setOnAction(actionEvent -> {
+            if (choiceBox.getSelectionModel().getSelectedItem() != null) {
+                kraj = choiceBox.getSelectionModel().getSelectedItem();
+                aktualizujListView();
             }
         });
         vBox.getChildren().add(choiceBox);
@@ -80,10 +79,64 @@ public class ProgObyvatele extends Application {
         stage.show();
     }
 
+
+    private EventHandler<ActionEvent> zpristupniPredchozi() {
+        return EventHandler -> {
+            try {
+                obyvatele.zpristupniObec(enumPozice.PREDCHUDCE, choiceBox.getValue());
+                listView.getSelectionModel().selectPrevious();
+            } catch (ObyvateleException x) {
+                chybovaHlaska(x.getMessage());
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> zpristupniObec() {
+        return EventHandler -> {
+            try {
+                Pair<enumPozice, enumKraj> poziceAKraj = dialogPoziceAKraj();
+
+                if (poziceAKraj == null) {
+                    System.out.println("pozice, nebo kraj nebyl zadán");
+                    return;
+                }
+                obyvatele.zpristupniObec(poziceAKraj.getKey(), poziceAKraj.getValue());
+                if (poziceAKraj.getValue() != choiceBox.getValue()) {
+                    choiceBox.setValue(poziceAKraj.getValue());
+                    aktualizujListView();
+                }
+                switch (poziceAKraj.getKey()) {
+                    case PRVNI -> listView.getSelectionModel().selectFirst();
+                    case NASLEDNIK -> listView.getSelectionModel().selectNext();
+                    case PREDCHUDCE -> listView.getSelectionModel().selectPrevious();
+                    case POSLEDNI -> listView.getSelectionModel().selectLast();
+                    default -> throw new ObyvateleException("Chyba v zadávání pozice");
+                }
+            } catch (ObyvateleException x) {
+                chybovaHlaska(x.getMessage());
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> zpristupniNasledujici() {
+        return EventHandler -> {
+            try {
+                obyvatele.zpristupniObec(enumPozice.NASLEDNIK, choiceBox.getValue());
+                listView.getSelectionModel().selectNext();
+            } catch (ObyvateleException x) {
+                chybovaHlaska(x.getMessage());
+            }
+        };
+    }
+
     private EventHandler<ActionEvent> odeberObec() {
         return EventHandler -> {
             try {
-                Pair<enumPozice,enumKraj> poziceAKraj = dialogPoziceAKraj();
+                Pair<enumPozice, enumKraj> poziceAKraj = dialogPoziceAKraj();
+                if (poziceAKraj == null) {
+                    System.out.println("pozice, nebo kraj nebyl zadán");
+                    return;
+                }
                 obyvatele.odeberObec(poziceAKraj.getKey(), poziceAKraj.getValue());
 
                 aktualizujListView();
@@ -96,49 +149,22 @@ public class ProgObyvatele extends Application {
     private EventHandler<ActionEvent> nacti() {
         return EventHandler -> {
 
-//            Seznam seznam = new SpojovySeznam();
-//            try {
-//                Objects.requireNonNull(seznam);
-//                ObjectInputStream vstup =
-//                        new ObjectInputStream(
-//                                new FileInputStream(nazevBinSouboru));
-//                seznam.zrus();
-//
-//                int pocet = vstup.readInt();
-//                for (int i = 0; i < pocet; i++) {
-//                    seznam.vlozPosledni(vstup.readObject());
-//                }
-//                vstup.close();
-//
-//            } catch (IOException | KolekceException | ClassNotFoundException ex) {
-//                System.err.println("Chyba při obnovování dat");
-//            }
-//            return seznam;
+            try {
+                obyvatele.nacti(nazevSouboru);
+                aktualizujListView();
+            } catch (ObyvateleException x) {
+                chybovaHlaska(x.getMessage());
+            }
         };
     }
 
     private EventHandler<ActionEvent> uloz() {
         return EventHandler -> {
-//            try {
-//                Objects.requireNonNull(seznam);
-//
-//                ObjectOutputStream vystup =
-//                        new ObjectOutputStream(
-//                                new FileOutputStream(nazevBinSouboru));
-//
-//
-//                vystup.writeInt(seznam.size());
-//
-//
-//                Iterator<Seznam> it = seznam.iterator();
-//                while (it.hasNext()) {
-//                    vystup.writeObject(it.next());
-//                }
-//
-//                vystup.close();
-//            } catch (IOException ex) {
-//                System.err.println("Chyba v zálohování dat");
-//            }
+            try {
+                obyvatele.uloz(nazevSouboru);
+            } catch (ObyvateleException x) {
+                chybovaHlaska(x.getMessage());
+            }
         };
     }
 
@@ -161,28 +187,39 @@ public class ProgObyvatele extends Application {
     }
 
     private void aktualizujListView() {
-        try {
-            observableList.clear();
-            Obec prvni = obyvatele.zpristupniObec(enumPozice.PRVNI, kraj);
-            Obec aktualni = obyvatele.zpristupniObec(enumPozice.NASLEDNIK, kraj);
-            if (prvni != null) {
-                observableList.add(prvni.toString());
 
-                while (aktualni != prvni) {
-                    observableList.add(aktualni.toString());
-                    aktualni = obyvatele.zpristupniObec(enumPozice.NASLEDNIK, kraj);
-                }
-            }
-        } catch (ObyvateleException x) {
-            //chybovaHlaska(x.getMessage());
-        }
+        observableList.clear();
+        observableList.addAll(obyvatele.dejDoObservableListu(kraj));
+
+//        try {
+//            Obec prvni = obyvatele.zpristupniObec(enumPozice.PRVNI, kraj);
+//            Obec aktualni = obyvatele.zpristupniObec(enumPozice.NASLEDNIK, kraj);
+//            if (prvni != null) {
+//                observableList.add(prvni.toString());
+//
+//                while (aktualni != prvni) {
+//                    observableList.add(aktualni.toString());
+//                    aktualni = obyvatele.zpristupniObec(enumPozice.NASLEDNIK, kraj);
+//                }
+//            }
+//        } catch (ObyvateleException x) {
+//            //chybovaHlaska(x.getMessage());
+//        }
     }
 
     private EventHandler<ActionEvent> vlozObec() {
         return EventHandler -> {
             try {
                 Obec obec = dialogObec();
-                Pair<enumPozice,enumKraj> poziceAKraj = dialogPoziceAKraj();
+                if (obec == null) {
+                    System.out.println("obec nebyla zadána");
+                    return;
+                }
+                Pair<enumPozice, enumKraj> poziceAKraj = dialogPoziceAKraj();
+                if (poziceAKraj == null) {
+                    System.out.println("pozice,nebo kraj nebyl zadán");
+                    return;
+                }
                 obyvatele.vlozObec(obec, poziceAKraj.getKey(), poziceAKraj.getValue());
 
                 aktualizujListView();
@@ -192,6 +229,7 @@ public class ProgObyvatele extends Application {
         };
     }
 
+    //vrací buď null, nebo Obec dle zadaných parametrů
     private Obec dialogObec() {
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
@@ -218,27 +256,25 @@ public class ProgObyvatele extends Application {
         dialog.getDialogPane().setContent(gridPane);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        dialog.setResultConverter(new Callback<ButtonType, Obec>() {
-            @Override
-            public Obec call(ButtonType buttonType) {
-                if (buttonType == ButtonType.OK) {
-                    try {
-                        int psc = Integer.parseInt(pscTXT.getText());
-                        int pocetM = Integer.parseInt(pocetMTXT.getText());
-                        int pocetZ = Integer.parseInt(pocetZTXT.getText());
-                        return new Obec(psc,nazevTXT.getText(),pocetM,pocetZ);
-                    }catch (Exception x){
-                        chybovaHlaska("Chyba v zadávání hodnot. Zadávejte celá čísla");
-                    }
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                try {
+                    int psc = Integer.parseInt(pscTXT.getText());
+                    int pocetM = Integer.parseInt(pocetMTXT.getText());
+                    int pocetZ = Integer.parseInt(pocetZTXT.getText());
+                    return new Obec(psc, nazevTXT.getText(), pocetM, pocetZ);
+                } catch (Exception x) {
+                    chybovaHlaska("Chyba v zadávání hodnot. Zadávejte celá čísla");
                 }
-                return null;
             }
+            return null;
         });
 
         Optional<Obec> obec = dialog.showAndWait();
         return obec.orElse(null);
     }
 
+    //vrací buď null, nebo pár enumPozice a enumKraj
     private Pair<enumPozice, enumKraj> dialogPoziceAKraj() {
 
         ChoiceBox<enumKraj> kraje = new ChoiceBox<>();
@@ -268,15 +304,12 @@ public class ProgObyvatele extends Application {
         dialog.getDialogPane().setContent(gridPane);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        dialog.setResultConverter(new Callback<ButtonType, Pair<enumPozice, enumKraj>>() {
-            @Override
-            public Pair<enumPozice, enumKraj> call(ButtonType buttonType) {
-                if (buttonType == ButtonType.OK) {
-                    return new Pair<>(pozice.getSelectionModel().getSelectedItem(),
-                            kraje.getSelectionModel().getSelectedItem());
-                }
-                return null;
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                return new Pair<>(pozice.getSelectionModel().getSelectedItem(),
+                        kraje.getSelectionModel().getSelectedItem());
             }
+            return null;
         });
 
         Optional<Pair<enumPozice, enumKraj>> vysledek = dialog.showAndWait();
