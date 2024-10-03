@@ -156,7 +156,8 @@ public class Obyvatele implements IObyvatele {
         float prumer = 0;
         int pocet = 0;
         //TODO zeptat se, jestli hodnota rovna nule je myšlen průměr, nebo nula jako kraj
-        if (kraj == enumKraj.NULA) {
+        //if (kraj == enumKraj.NULA) {
+        if (pole[kraj.getIdKraje() - 1].jePrazdny()) {
             for (IAbstrDoubleList<Obec> obec : pole) {
                 Iterator<Obec> iterator = obec.iterator();
 
@@ -186,19 +187,19 @@ public class Obyvatele implements IObyvatele {
         }
 
         //výpis v případě, že je kraj nula
-        if (kraj == enumKraj.NULA) {
+//        if (kraj == enumKraj.NULA) {
+        if (pole[kraj.getIdKraje() - 1].jePrazdny()) {
             for (IAbstrDoubleList<Obec> list : pole) {
                 Iterator<Obec> iterator = list.iterator();
                 while (iterator.hasNext()) {
                     System.out.println(iterator.next().toString());
                 }
             }
-            return;
-        }
-
-        Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
-        while (iterator.hasNext()) {
-            System.out.println(iterator.next().toString());
+        } else {
+            Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
+            while (iterator.hasNext()) {
+                System.out.println(iterator.next().toString());
+            }
         }
     }
 
@@ -210,7 +211,8 @@ public class Obyvatele implements IObyvatele {
 
         float prumer = zjistiPrumer(kraj);
         //TODO zeptat se co znamená nula
-        if (kraj == enumKraj.NULA) {
+//        if (kraj == enumKraj.NULA) {
+        if (pole[kraj.getIdKraje() - 1].jePrazdny()) {
             for (IAbstrDoubleList<Obec> list : pole) {
                 Iterator<Obec> iterator = list.iterator();
                 while (iterator.hasNext()) {
@@ -220,15 +222,15 @@ public class Obyvatele implements IObyvatele {
                     }
                 }
             }
-            return;
-        }
 
-        Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
-        while (iterator.hasNext()) {
+        } else {
+            Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
+            while (iterator.hasNext()) {
 
-            Obec dalsi = iterator.next();
-            if (dalsi.getCelkem() > prumer) {
-                System.out.println(dalsi);
+                Obec dalsi = iterator.next();
+                if (dalsi.getCelkem() > prumer) {
+                    System.out.println(dalsi);
+                }
             }
         }
     }
@@ -241,13 +243,14 @@ public class Obyvatele implements IObyvatele {
         }
 
         //TODO nula
-        if (kraj == enumKraj.NULA) {
+//        if (kraj == enumKraj.NULA) {
+        if (pole[kraj.getIdKraje() - 1].jePrazdny()) {
             for (IAbstrDoubleList<Obec> obec : pole) {
                 obec.zrus();
             }
-            return;
+        } else {
+            pole[kraj.getIdKraje() - 1].zrus();
         }
-        pole[kraj.getIdKraje() - 1].zrus();
     }
 
     public void uloz(String nazevSouboru) throws ObyvateleException {
@@ -301,12 +304,12 @@ public class Obyvatele implements IObyvatele {
         }
     }
 
-    public ObservableList<String> dejDoObservableListu(enumKraj kraj){
+    public ObservableList<String> dejDoObservableListu(enumKraj kraj) {
         ObservableList<String> observableList = FXCollections.observableArrayList();
 
         Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             observableList.add(iterator.next().toString());
         }
 

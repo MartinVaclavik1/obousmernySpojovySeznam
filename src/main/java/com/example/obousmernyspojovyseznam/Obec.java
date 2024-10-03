@@ -10,7 +10,6 @@ public class Obec implements Serializable {
     private int pocetZen;
     private int pocetCelkem;
 
-    //TODO zeptat se jestli počítat pocetCelkem, když je to v csv jako samostatný pole - bylo by to rychlejší
     public Obec(int psc, String obec, int pocetMuzu, int pocetZen) {
         this.psc = psc;
         this.obec = obec;

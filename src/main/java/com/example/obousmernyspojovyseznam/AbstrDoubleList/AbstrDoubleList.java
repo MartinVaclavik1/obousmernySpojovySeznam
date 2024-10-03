@@ -3,7 +3,6 @@ package com.example.obousmernyspojovyseznam.AbstrDoubleList;
 import java.util.Iterator;
 
 public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
-    //TODO kontrolovat všude null a vyhazovat chyby? - asi jo. je mu to jedno
     private Prvek<T> prvni;
     private Prvek<T> aktualni;
 
