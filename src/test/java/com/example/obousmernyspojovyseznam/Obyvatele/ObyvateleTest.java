@@ -18,7 +18,7 @@ class ObyvateleTest {
     public void testZjistiPrumer01() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
-        float prumer = obyvatele.zjistiPrumer(enumKraj.NULA);
+        float prumer = obyvatele.zjistiPrumer(enumKraj.JIHOMORAVSKY);
         System.out.println(prumer);
     }
 
@@ -34,15 +34,15 @@ class ObyvateleTest {
     public void testZobrazObce01() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
-        obyvatele.zobrazObce(enumKraj.NULA);
+        obyvatele.zobrazObce(enumKraj.KRALOVEHRADECKY);
     }
 
     @Test
     public void testZobrazObceNadPrumer01() throws ObyvateleException {
         Obyvatele obyvatele = new Obyvatele();
         obyvatele.importData(cestaKCSVSouboru);
-        System.out.println(obyvatele.zjistiPrumer(enumKraj.NULA));
-        obyvatele.zobrazObceNadPrumer(enumKraj.NULA);
+        System.out.println(obyvatele.zjistiPrumer(enumKraj.LIBERECKY));
+        obyvatele.zobrazObceNadPrumer(enumKraj.LIBERECKY);
     }
 
     @Test

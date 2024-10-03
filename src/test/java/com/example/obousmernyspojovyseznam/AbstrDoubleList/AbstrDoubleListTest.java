@@ -3,6 +3,7 @@ package com.example.obousmernyspojovyseznam.AbstrDoubleList;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 

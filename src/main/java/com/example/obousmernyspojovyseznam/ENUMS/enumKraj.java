@@ -1,7 +1,9 @@
 package com.example.obousmernyspojovyseznam.ENUMS;
 
+import java.util.Random;
+
 public enum enumKraj {
-    NULA("nula", 0),
+    //NULA("nula", 0),
     HLAVNIMESTOPRAHA("Hlavní město Praha",1),
     JIHOCESKY("Jihočeský", 2),
     JIHOMORAVSKY("Jihomoravský", 3),
@@ -23,6 +25,16 @@ public enum enumKraj {
     enumKraj(String kraj, int idKraje) {
         this.idKraje = idKraje;
         this.kraj = kraj;
+    }
+
+    public static enumKraj nahodny() {
+        int nahodny = new Random().nextInt(14) + 1; //1 až 14 čísla
+        for (enumKraj kraj1 : enumKraj.values()){
+            if(kraj1.idKraje == nahodny){
+                return kraj1;
+            }
+        }
+        return null;
     }
 
     public int getIdKraje() {

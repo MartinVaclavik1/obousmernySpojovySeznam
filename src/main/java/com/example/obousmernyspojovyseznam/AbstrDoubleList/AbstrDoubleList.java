@@ -289,7 +289,7 @@ public class AbstrDoubleList<T> implements IAbstrDoubleList<T> {
 
             @Override
             public boolean hasNext() {
-                return nastaveny.nasledujici != prvni;
+                return jePrazdny()? false: nastaveny.nasledujici != prvni;
             }
 
 

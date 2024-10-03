@@ -283,7 +283,9 @@ public class Obyvatele implements IObyvatele {
             ObjectInputStream vstup =
                     new ObjectInputStream(
                             new FileInputStream(nazevSouboru));
-            zrus(enumKraj.NULA);
+            for (IAbstrDoubleList<Obec> obec : pole) {
+                obec.zrus();
+            }
 
             int kraj = vstup.readInt();
 

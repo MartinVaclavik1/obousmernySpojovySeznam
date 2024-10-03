@@ -22,6 +22,7 @@ import javafx.util.Pair;
 
 import java.io.*;
 import java.util.Optional;
+import java.util.Random;
 
 
 public class ProgObyvatele extends Application {
@@ -55,6 +56,7 @@ public class ProgObyvatele extends Application {
         vBox.getChildren().add(newButton("zpřístupni následující", zpristupniNasledujici()));
         vBox.getChildren().add(newButton("ulož", uloz()));
         vBox.getChildren().add(newButton("načti", nacti()));
+        vBox.getChildren().add(newButton("vygeneruj", vygeneruj()));
 
         choiceBox.getItems().addAll(enumKraj.HLAVNIMESTOPRAHA, enumKraj.JIHOCESKY,
                 enumKraj.JIHOMORAVSKY, enumKraj.KARLOVARSKY, enumKraj.VYSOCINA, enumKraj.KRALOVEHRADECKY,
@@ -77,6 +79,57 @@ public class ProgObyvatele extends Application {
         stage.setHeight(500);
         stage.setWidth(800);
         stage.show();
+    }
+
+    private EventHandler<ActionEvent> vygeneruj() {
+        return EventHandler -> {
+            /*
+             * random obec
+             * random kraj
+             * int psc, String obec, int pocetMuzu, int pocetZen
+             */
+            Random nahoda = new Random();
+            Pair<Integer, Boolean> pocetAJeNahodnyKraj = dialogPocetGenerovanych();
+
+            if (pocetAJeNahodnyKraj != null) {
+
+                int pocet = pocetAJeNahodnyKraj.getKey();
+                enumKraj nahodnyKraj;
+
+                for (int i = 0; i < pocet; i++) {
+                    if (pocetAJeNahodnyKraj.getValue()) {
+                        nahodnyKraj = enumKraj.nahodny();
+                    } else {
+                        nahodnyKraj = kraj;
+                    }
+
+                    int psc = nahoda.nextInt(98999) + 1000; //od 1 000 do 99 999
+                    String nazev = generatorNazvu(nahoda.nextInt(15) + 5);
+                    int pocetMuzu = nahoda.nextInt(19700) + 300; //od 300 do 20k
+                    int pocetZen = nahoda.nextInt(19700) + 300; //od 300 do 20k
+                    try {
+                        obyvatele.vlozObec(new Obec(psc, nazev, pocetMuzu, pocetZen), enumPozice.POSLEDNI, nahodnyKraj);
+                    } catch (ObyvateleException e) {
+                        chybovaHlaska(e.getMessage());
+                    }
+                }
+                aktualizujListView();
+            }
+        };
+    }
+
+    private String generatorNazvu(int delka) {
+
+        char ZACATEK = 'a';
+        char POCET_PISMEN = 26;
+
+        StringBuilder nazev = new StringBuilder();
+        Random nahoda = new Random();
+        for (int i = 0; i < delka; i++) {
+            nazev.append((char) (ZACATEK + nahoda.nextInt(POCET_PISMEN)));
+
+        }
+        return String.valueOf(nazev);
     }
 
 
@@ -189,7 +242,11 @@ public class ProgObyvatele extends Application {
     private void aktualizujListView() {
 
         observableList.clear();
-        observableList.addAll(obyvatele.dejDoObservableListu(kraj));
+
+        ObservableList<String> list = obyvatele.dejDoObservableListu(kraj);
+        if (!list.isEmpty()) {
+            observableList.addAll(list);
+        }
 
 //        try {
 //            Obec prvni = obyvatele.zpristupniObec(enumPozice.PRVNI, kraj);
@@ -313,6 +370,39 @@ public class ProgObyvatele extends Application {
         });
 
         Optional<Pair<enumPozice, enumKraj>> vysledek = dialog.showAndWait();
+        return vysledek.orElse(null);
+    }
+
+    private Pair<Integer, Boolean> dialogPocetGenerovanych() {
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(20, 10, 10, 10));
+        gridPane.add(new Label("Počet generovaných prvků:"), 0, 2);
+        gridPane.add(new Label("Generovat v náhodném kraji? (jinak se generuje do vybraného kraje):"), 0, 3);
+        TextField pocet = new TextField();
+        CheckBox checkBox = new CheckBox();
+
+        gridPane.add(pocet, 1, 2);
+        gridPane.add(checkBox, 1, 3);
+        Dialog<Pair<Integer, Boolean>> dialog = new Dialog<>();
+
+
+        dialog.getDialogPane().setContent(gridPane);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                try {
+                    return new Pair<>(Integer.parseInt(pocet.getText()), checkBox.isSelected());
+                } catch (Exception x) {
+                    chybovaHlaska(x.getMessage());
+                }
+            }
+            return null;
+        });
+
+        Optional<Pair<Integer, Boolean>> vysledek = dialog.showAndWait();
         return vysledek.orElse(null);
     }
 
