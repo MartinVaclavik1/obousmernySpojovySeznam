@@ -315,6 +315,11 @@ public class Obyvatele implements IObyvatele {
             observableList.add(iterator.next().toString());
         }
 
+        //když má pole jen jeden prvek
+        if(!pole[kraj.getIdKraje() - 1].jePrazdny() && observableList.isEmpty()){
+            observableList.add(iterator.next().toString());
+        }
+
         return observableList;
     }
 }
