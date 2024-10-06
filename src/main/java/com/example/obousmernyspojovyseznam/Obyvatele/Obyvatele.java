@@ -16,6 +16,7 @@ import java.util.Objects;
 public class Obyvatele implements IObyvatele {
     private final IAbstrDoubleList<Obec>[] pole = new AbstrDoubleList[14];
 
+    //inicializuje AbstrDoubleList v každé části pole
     public Obyvatele() {
         for (int i = 0; i < pole.length; i++) {
             pole[i] = new AbstrDoubleList<>();
@@ -25,6 +26,12 @@ public class Obyvatele implements IObyvatele {
     @Override
     public int importData(String soubor) throws ObyvateleException {
         int korektneNactene = 0;
+        //TODO zeptat se, jestli při importování dat mazat všechny data, nebo je jen přidat ke stávajícím
+        // - odkomentovat pro mazání dat
+//       for (IAbstrDoubleList<Obec> obec : pole) {
+//                obec.zrus();
+//            }
+
         try (BufferedReader nactenySoubor = new BufferedReader(new FileReader((soubor)))) {
             String radek = nactenySoubor.readLine();
             while (radek != null) {
@@ -311,14 +318,15 @@ public class Obyvatele implements IObyvatele {
 
         Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
 
+        //když má pole jeden prvek
+        if(!pole[kraj.getIdKraje() - 1].jePrazdny()){
+            observableList.add(iterator.next().toString());
+        }
         while (iterator.hasNext()) {
             observableList.add(iterator.next().toString());
         }
 
-        //když má pole jen jeden prvek
-        if(!pole[kraj.getIdKraje() - 1].jePrazdny() && observableList.isEmpty()){
-            observableList.add(iterator.next().toString());
-        }
+
 
         return observableList;
     }

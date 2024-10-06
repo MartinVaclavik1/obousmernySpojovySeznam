@@ -339,7 +339,7 @@ public class ProgObyvatele extends Application {
                 enumKraj.JIHOMORAVSKY, enumKraj.KARLOVARSKY, enumKraj.VYSOCINA, enumKraj.KRALOVEHRADECKY,
                 enumKraj.LIBERECKY, enumKraj.MORAVSKOSLEZSKY, enumKraj.OLOMOUCKY, enumKraj.PARDUBICKY,
                 enumKraj.PLZENSKY, enumKraj.STREDOCESKY, enumKraj.USTECKY, enumKraj.ZLINSKY);
-        kraje.getSelectionModel().selectFirst();
+        kraje.getSelectionModel().select(choiceBox.getValue());
 
         ChoiceBox<enumPozice> pozice = new ChoiceBox<>();
         pozice.getItems().addAll(enumPozice.PRVNI, enumPozice.POSLEDNI, enumPozice.NASLEDNIK,
