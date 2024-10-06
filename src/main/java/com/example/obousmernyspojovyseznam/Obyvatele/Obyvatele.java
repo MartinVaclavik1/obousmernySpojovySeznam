@@ -278,6 +278,7 @@ public class Obyvatele implements IObyvatele {
             vystup.writeInt(-1);
 
             vystup.close();
+            System.out.println("Úspěšně uloženo");
         } catch (Exception x) {
             throw new ObyvateleException("Chyba při ukládání souboru");
         }
@@ -286,6 +287,7 @@ public class Obyvatele implements IObyvatele {
     public void nacti(String nazevSouboru) throws ObyvateleException {
 
         try {
+            int pocet = 0;
 //            Objects.requireNonNull(pole);
             ObjectInputStream vstup =
                     new ObjectInputStream(
@@ -301,12 +303,14 @@ public class Obyvatele implements IObyvatele {
                 //System.out.println(obec);
                 if (obec != null) {
                     pole[kraj].vlozPosledni(obec);
+                    pocet++;
                 }
 
                 kraj = vstup.readInt();
 
             }
             vstup.close();
+            System.out.println("Úspěšně načteno " + pocet + " obcí");
 
         } catch (Exception x) {
             throw new ObyvateleException("Chyba při načítání dat");
@@ -319,13 +323,12 @@ public class Obyvatele implements IObyvatele {
         Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
 
         //když má pole jeden prvek
-        if(!pole[kraj.getIdKraje() - 1].jePrazdny()){
+        if (!pole[kraj.getIdKraje() - 1].jePrazdny()) {
             observableList.add(iterator.next().toString());
         }
         while (iterator.hasNext()) {
             observableList.add(iterator.next().toString());
         }
-
 
 
         return observableList;
