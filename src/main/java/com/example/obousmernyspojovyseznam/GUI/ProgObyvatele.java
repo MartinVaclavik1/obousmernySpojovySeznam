@@ -137,7 +137,11 @@ public class ProgObyvatele extends Application {
         return EventHandler -> {
             try {
                 obyvatele.zpristupniObec(enumPozice.PREDCHUDCE, choiceBox.getValue());
-                listView.getSelectionModel().selectPrevious();
+                if(listView.getSelectionModel().isSelected(0)){
+                    listView.getSelectionModel().selectLast();
+                }else {
+                    listView.getSelectionModel().selectPrevious();
+                }
             } catch (ObyvateleException x) {
                 chybovaHlaska(x.getMessage());
             }
@@ -175,7 +179,11 @@ public class ProgObyvatele extends Application {
         return EventHandler -> {
             try {
                 obyvatele.zpristupniObec(enumPozice.NASLEDNIK, choiceBox.getValue());
-                listView.getSelectionModel().selectNext();
+                if(listView.getSelectionModel().isSelected(listView.getItems().size() - 1)){
+                    listView.getSelectionModel().selectFirst();
+                }else {
+                    listView.getSelectionModel().selectNext();
+                }
             } catch (ObyvateleException x) {
                 chybovaHlaska(x.getMessage());
             }
