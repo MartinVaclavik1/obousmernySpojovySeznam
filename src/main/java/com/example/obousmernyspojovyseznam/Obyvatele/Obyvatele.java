@@ -168,6 +168,10 @@ public class Obyvatele implements IObyvatele {
             for (IAbstrDoubleList<Obec> obec : pole) {
                 Iterator<Obec> iterator = obec.iterator();
 
+                if (!obec.jePrazdny()) {
+                    prumer += iterator.next().getPocetCelkem();
+                    pocet++;
+                }
                 while (iterator.hasNext()) {
                     prumer += iterator.next().getPocetCelkem();
                     pocet++;
@@ -176,6 +180,10 @@ public class Obyvatele implements IObyvatele {
             }
         } else {
             Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
+            if (!pole[kraj.getIdKraje() - 1].jePrazdny()) {
+                prumer += iterator.next().getPocetCelkem();
+                pocet++;
+            }
             while (iterator.hasNext()) {
                 prumer += iterator.next().getPocetCelkem();
                 pocet++;
@@ -198,12 +206,20 @@ public class Obyvatele implements IObyvatele {
         if (pole[kraj.getIdKraje() - 1].jePrazdny()) {
             for (IAbstrDoubleList<Obec> list : pole) {
                 Iterator<Obec> iterator = list.iterator();
+
+                if (!pole[kraj.getIdKraje() - 1].jePrazdny()) {
+                    System.out.println(iterator.next().toString());
+                }
                 while (iterator.hasNext()) {
                     System.out.println(iterator.next().toString());
                 }
             }
         } else {
             Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
+
+            if (!pole[kraj.getIdKraje() - 1].jePrazdny()) {
+                System.out.println(iterator.next().toString());
+            }
             while (iterator.hasNext()) {
                 System.out.println(iterator.next().toString());
             }
@@ -222,6 +238,13 @@ public class Obyvatele implements IObyvatele {
         if (pole[kraj.getIdKraje() - 1].jePrazdny()) {
             for (IAbstrDoubleList<Obec> list : pole) {
                 Iterator<Obec> iterator = list.iterator();
+
+                if (!pole[kraj.getIdKraje() - 1].jePrazdny()) {
+                    Obec dalsi = iterator.next();
+                    if (dalsi.getPocetCelkem() > prumer) {
+                        System.out.println(dalsi);
+                    }
+                }
                 while (iterator.hasNext()) {
                     Obec dalsi = iterator.next();
                     if (dalsi.getPocetCelkem() > prumer) {
@@ -232,11 +255,18 @@ public class Obyvatele implements IObyvatele {
 
         } else {
             Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
-            while (iterator.hasNext()) {
 
+            if (!pole[kraj.getIdKraje() - 1].jePrazdny()) {
                 Obec dalsi = iterator.next();
                 if (dalsi.getPocetCelkem() > prumer) {
                     System.out.println(dalsi);
+                }
+
+                while (iterator.hasNext()) {
+                    dalsi = iterator.next();
+                    if (dalsi.getPocetCelkem() > prumer) {
+                        System.out.println(dalsi);
+                    }
                 }
             }
         }
@@ -270,6 +300,11 @@ public class Obyvatele implements IObyvatele {
 
             for (int i = 0; i < pole.length; i++) {
                 Iterator<Obec> it = pole[i].iterator();
+
+                if (!pole[i].jePrazdny()) {
+                    vystup.writeInt(i);
+                    vystup.writeObject(it.next());
+                }
                 while (it.hasNext()) {
                     vystup.writeInt(i);
                     vystup.writeObject(it.next());
