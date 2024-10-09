@@ -169,7 +169,7 @@ public class Obyvatele implements IObyvatele {
                 Iterator<Obec> iterator = obec.iterator();
 
                 while (iterator.hasNext()) {
-                    prumer += iterator.next().getCelkem();
+                    prumer += iterator.next().getPocetCelkem();
                     pocet++;
                 }
 
@@ -177,7 +177,7 @@ public class Obyvatele implements IObyvatele {
         } else {
             Iterator<Obec> iterator = pole[kraj.getIdKraje() - 1].iterator();
             while (iterator.hasNext()) {
-                prumer += iterator.next().getCelkem();
+                prumer += iterator.next().getPocetCelkem();
                 pocet++;
             }
         }
@@ -224,7 +224,7 @@ public class Obyvatele implements IObyvatele {
                 Iterator<Obec> iterator = list.iterator();
                 while (iterator.hasNext()) {
                     Obec dalsi = iterator.next();
-                    if (dalsi.getCelkem() > prumer) {
+                    if (dalsi.getPocetCelkem() > prumer) {
                         System.out.println(dalsi);
                     }
                 }
@@ -235,7 +235,7 @@ public class Obyvatele implements IObyvatele {
             while (iterator.hasNext()) {
 
                 Obec dalsi = iterator.next();
-                if (dalsi.getCelkem() > prumer) {
+                if (dalsi.getPocetCelkem() > prumer) {
                     System.out.println(dalsi);
                 }
             }

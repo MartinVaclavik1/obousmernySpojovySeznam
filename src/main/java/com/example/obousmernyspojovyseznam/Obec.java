@@ -35,7 +35,7 @@ public class Obec implements Serializable {
         return pocetZen;
     }
 
-    public int getCelkem() {
+    public int getPocetCelkem() {
         return pocetCelkem;
     }
 
