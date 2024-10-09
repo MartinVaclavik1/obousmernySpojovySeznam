@@ -2,7 +2,7 @@ package com.example.obousmernyspojovyseznam.AbstrDoubleList;
 
 import java.util.Iterator;
 
-public interface IAbstrDoubleList<T> {
+public interface IAbstrDoubleList<T> extends Iterable<T>{
     void zrus();//zrušení celého seznamu,
     boolean jePrazdny();//test naplněnosti seznamu,
     void vlozPrvni(T data) throws AbstrDoubleListException;//vložení prvku do seznamu na první místo
